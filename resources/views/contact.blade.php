@@ -4,392 +4,480 @@
 
 @section('content')
 <!-- Hero Section with Animated Background -->
-<section class="relative overflow-hidden medical-gradient text-white py-24">
+<section class="relative overflow-hidden medical-gradient text-white py-20 md:py-28">
     <!-- Animated background elements -->
     <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute -top-20 -left-20 w-64 h-64 bg-white/5 rounded-full animate-float-slow"></div>
-        <div class="absolute top-1/3 right-10 w-40 h-40 bg-white/10 rounded-full animate-float"></div>
-        <div class="absolute bottom-20 left-1/4 w-32 h-32 bg-white/15 rounded-full animate-pulse"></div>
+        <div class="absolute -top-20 -left-20 w-64 h-64 bg-gradient-to-br from-blue-500/20 to-teal-500/20 rounded-full animate-float-slow"></div>
+        <div class="absolute top-1/3 right-10 w-40 h-40 bg-gradient-to-tr from-purple-500/15 to-pink-500/15 rounded-full animate-float-delay"></div>
+        <div class="absolute bottom-20 left-1/4 w-32 h-32 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full animate-pulse-slow"></div>
         
-        <!-- Animated social icons in background -->
+        <!-- Animated medical icons in background -->
         <div class="absolute top-1/4 left-10 animate-bounce-slow">
-            <i class="fab fa-whatsapp text-white/20 text-4xl"></i>
+            <i class="fas fa-heartbeat text-white/15 text-5xl"></i>
         </div>
-        <div class="absolute bottom-1/3 right-20 animate-bounce" style="animation-delay: 0.5s">
-            <i class="fas fa-envelope text-white/20 text-4xl"></i>
-        </div>
-        <div class="absolute top-10 right-1/3 animate-spin-slow">
-            <i class="fas fa-phone text-white/20 text-4xl"></i>
+        <div class="absolute bottom-1/3 right-20 animate-bounce-delay">
+            <i class="fas fa-stethoscope text-white/15 text-5xl"></i>
         </div>
     </div>
     
-    <div class="container mx-auto px-6 relative z-10">
+    <div class="container mx-auto px-4 sm:px-6 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="font-heading text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
-                Get in <span class="text-yellow-300">Touch</span>
+            <h1 class="font-heading text-4xl sm:text-5xl md:text-6xl font-bold mb-4 animate-fade-in-up">
+                Connect With <span class="text-cyan-300">Precision</span>
             </h1>
-            <p class="text-xl mb-10 opacity-90 animate-fade-in-up-delay">
-                We're here to help. Choose your preferred way to connect with us.
+            <p class="text-lg sm:text-xl mb-8 opacity-90 animate-fade-in-up-delay">
+                Your health is our priority. Choose the most convenient way to reach our medical team.
             </p>
             
-            <!-- Quick Contact Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-                <div class="quick-stat animate-pop-in" style="animation-delay: 0.1s">
-                    <i class="fas fa-clock text-2xl mb-2"></i>
-                    <div class="font-bold">24/7 Support</div>
+            <!-- Animated Statistics -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-12">
+                <div class="quick-stat animate-pop-in" data-delay="0.1s">
+                    <div class="stat-number" data-target="98">0</div>
+                    <div class="stat-label">Satisfaction Rate</div>
                 </div>
-                <div class="quick-stat animate-pop-in" style="animation-delay: 0.2s">
-                    <i class="fas fa-bolt text-2xl mb-2"></i>
-                    <div class="font-bold">Instant Response</div>
+                <div class="quick-stat animate-pop-in" data-delay="0.2s">
+                    <div class="stat-number" data-target="30">0</div>
+                    <div class="stat-label">Min Response Time</div>
                 </div>
-                <div class="quick-stat animate-pop-in" style="animation-delay: 0.3s">
-                    <i class="fas fa-headset text-2xl mb-2"></i>
-                    <div class="font-bold">Multi-channel</div>
+                <div class="quick-stat animate-pop-in" data-delay="0.3s">
+                    <div class="stat-number" data-target="247">0</div>
+                    <div class="stat-label">Days Support</div>
                 </div>
-                <div class="quick-stat animate-pop-in" style="animation-delay: 0.4s">
-                    <i class="fas fa-check-circle text-2xl mb-2"></i>
-                    <div class="font-bold">Always Helpful</div>
+                <div class="quick-stat animate-pop-in" data-delay="0.4s">
+                    <div class="stat-number" data-target="5000">0</div>
+                    <div class="stat-label">Patients Helped</div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div class="text-white text-center">
-            <span class="block mb-2">Explore contact options</span>
-            <i class="fas fa-chevron-down text-2xl"></i>
+    <!-- Animated scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <div class="scroll-indicator animate-bounce">
+            <span class="block text-sm opacity-80 mb-2">Explore Options</span>
+            <i class="fas fa-chevron-down"></i>
         </div>
     </div>
 </section>
 
-<!-- Emergency Contact Banner -->
-<div class="bg-gradient-to-r from-red-600 to-red-700 text-white py-4">
-    <div class="container mx-auto px-6">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center mb-3 md:mb-0">
-                <div class="w-3 h-3 bg-white rounded-full mr-3 animate-pulse"></div>
-                <span class="font-bold">EMERGENCY CONTACT AVAILABLE 24/7</span>
-            </div>
-            <a href="tel:+254791903552" class="bg-white text-red-700 font-bold px-6 py-2 rounded-lg hover:bg-gray-100 transition flex items-center animate-pulse-once">
-                <i class="fas fa-phone-volume mr-2"></i>
-                EMERGENCY: +254 791 903 552
-            </a>
-        </div>
-    </div>
-</div>
-
 <!-- Main Contact Section -->
-<section class="py-20 bg-gray-50">
-    <div class="container mx-auto px-6">
-        <div class="max-w-6xl mx-auto">
+<section class="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto">
             
-            <!-- Contact Methods Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+            <!-- Contact Methods Grid with Enhanced Animation -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-20">
                 
-                <!-- WhatsApp Card -->
-                <div class="contact-method-card whatsapp animate-slide-up" style="animation-delay: 0.1s">
-                    <div class="contact-icon">
-                        <i class="fab fa-whatsapp"></i>
-                    </div>
-                    <h3 class="contact-method-title">WhatsApp Chat</h3>
-                    <p class="contact-method-description">
-                        Instant messaging with our support team. Fastest response time.
-                    </p>
-                    <div class="contact-info">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-clock mr-2 text-green-600"></i>
-                            <span>Response time: <strong>2-5 minutes</strong></span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle mr-2 text-green-600"></i>
-                            <span>Available: <strong>24/7</strong></span>
+                <!-- WhatsApp Card - Enhanced -->
+                <div class="contact-method-card whatsapp animate-card-float" data-delay="0.1s">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-2xl shadow-lg animate-pulse-glow">
+                            <i class="fab fa-whatsapp"></i>
                         </div>
                     </div>
-                    <a href="https://wa.me/254791903552?text=Hello%20Precise%20Diagnostics%2C%20I%20need%20information%20about%20your%20services" 
-                       target="_blank" 
-                       class="contact-action-btn whatsapp-btn">
-                        <i class="fab fa-whatsapp mr-2"></i> Chat on WhatsApp
-                    </a>
-                    <div class="whatsapp-qr hidden md:block mt-4">
-                        <div class="text-center text-sm text-gray-600 mb-2">Scan QR Code</div>
-                        <div class="flex justify-center">
-                            <div class="bg-white p-2 rounded-lg">
-                                <!-- QR Code Placeholder -->
-                                <div class="w-24 h-24 bg-gradient-to-br from-green-100 to-green-200 rounded flex items-center justify-center">
-                                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                    <div class="pt-10">
+                        <h3 class="contact-method-title">WhatsApp Chat</h3>
+                        <p class="contact-method-description">
+                            Instant messaging with our medical support team. Get quick responses for your health queries.
+                        </p>
+                        <div class="contact-info">
+                            <div class="info-item">
+                                <i class="fas fa-bolt text-green-500"></i>
+                                <span>Response: <strong>2-5 minutes</strong></span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock text-green-500"></i>
+                                <span>Available: <strong>24/7</strong></span>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <a href="https://wa.me/254791903552?text=Hello%20Precise%20Diagnostics%2C%20I%20need%20medical%20assistance" 
+                               target="_blank" 
+                               class="contact-action-btn whatsapp-btn group">
+                                <span class="flex items-center justify-center">
+                                    <i class="fab fa-whatsapp mr-2 group-hover:scale-110 transition-transform"></i> 
+                                    <span>Start WhatsApp Chat</span>
+                                    <i class="fas fa-external-link-alt ml-2 text-sm opacity-70"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-center text-sm text-gray-600 mb-2">Scan to Chat</div>
+                            <div class="flex justify-center">
+                                <div class="qr-code-container">
+                                    <div class="qr-code-placeholder">
+                                        <div class="qr-animation"></div>
+                                        <i class="fab fa-whatsapp text-green-600 text-3xl"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Phone Call Card -->
-                <div class="contact-method-card phone animate-slide-up" style="animation-delay: 0.2s">
-                    <div class="contact-icon">
-                        <i class="fas fa-phone-alt"></i>
+                <!-- Phone Call Card - Enhanced -->
+                <div class="contact-method-card phone animate-card-float" data-delay="0.2s">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-2xl shadow-lg animate-ring">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
                     </div>
-                    <h3 class="contact-method-title">Phone Call</h3>
-                    <p class="contact-method-description">
-                        Speak directly with our reception or medical team.
-                    </p>
-                    <div class="contact-info space-y-3">
-                        <div class="phone-number">
-                            <div class="phone-label">Main Line</div>
-                            <a href="tel:+254207856359" class="phone-link">
-                                <i class="fas fa-phone mr-2"></i> +254 207 856 359
-                            </a>
-                        </div>
-                        <div class="phone-number">
-                            <div class="phone-label">Mobile</div>
-                            <a href="tel:+254791903552" class="phone-link">
-                                <i class="fas fa-mobile-alt mr-2"></i> +254 791 903 552
-                            </a>
-                        </div>
-                        <div class="phone-number">
-                            <div class="phone-label">Hours</div>
-                            <div class="phone-hours">
-                                <i class="far fa-clock mr-2"></i> Mon-Sun: 6:00 AM - 10:00 PM
+                    <div class="pt-10">
+                        <h3 class="contact-method-title">Phone Consultation</h3>
+                        <p class="contact-method-description">
+                            Speak directly with our medical professionals for personalized health advice.
+                        </p>
+                        <div class="contact-info space-y-4">
+                            <div class="phone-number-item">
+                                <div class="phone-label">Medical Hotline</div>
+                                <a href="tel:+254207856359" class="phone-link hover-lift">
+                                    <i class="fas fa-hospital mr-2"></i> +254 207 856 359
+                                </a>
+                            </div>
+                            <div class="phone-number-item">
+                                <div class="phone-label">Mobile Support</div>
+                                <a href="tel:+254791903552" class="phone-link hover-lift">
+                                    <i class="fas fa-mobile-alt mr-2"></i> +254 791 903 552
+                                </a>
+                            </div>
+                            <div class="phone-number-item">
+                                <div class="phone-label">Consultation Hours</div>
+                                <div class="phone-hours">
+                                    <i class="far fa-clock mr-2"></i> 
+                                    <span>Mon-Sun: 6:00 AM - 10:00 PM</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <a href="tel:+254207856359" class="contact-action-btn phone-btn">
-                            <i class="fas fa-phone mr-2"></i> Call Now
-                        </a>
-                        <button onclick="scheduleCallback()" class="contact-action-btn callback-btn">
-                            <i class="fas fa-phone-volume mr-2"></i> Request Callback
-                        </button>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+                            <a href="tel:+254207856359" class="contact-action-btn phone-btn group">
+                                <i class="fas fa-phone mr-2 group-hover:rotate-12 transition-transform"></i> 
+                                Call Now
+                            </a>
+                            <button onclick="scheduleMedicalCallback()" class="contact-action-btn callback-btn group">
+                                <i class="fas fa-calendar-plus mr-2 group-hover:scale-110 transition-transform"></i> 
+                                Schedule Call
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Email Card -->
-                <div class="contact-method-card email animate-slide-up" style="animation-delay: 0.3s">
-                    <div class="contact-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <h3 class="contact-method-title">Email Us</h3>
-                    <p class="contact-method-description">
-                        For detailed inquiries, appointments, or medical questions.
-                    </p>
-                    <div class="contact-info">
-                        <div class="email-addresses space-y-3">
-                            <div class="email-item">
-                                <div class="email-label">General Inquiries</div>
-                                <a href="mailto:info@precisediagnostic.co.ke" class="email-link">
-                                    <i class="fas fa-envelope mr-2"></i> info@precisediagnostic.co.ke
-                                </a>
-                            </div>
-                            <div class="email-item">
-                                <div class="email-label">Appointments</div>
-                                <a href="mailto:appointments@precisediagnostic.co.ke" class="email-link">
-                                    <i class="fas fa-calendar-check mr-2"></i> appointments@precisediagnostic.co.ke
-                                </a>
-                            </div>
-                            <div class="email-item">
-                                <div class="email-label">Medical Reports</div>
-                                <a href="mailto:reports@precisediagnostic.co.ke" class="email-link">
-                                    <i class="fas fa-file-medical mr-2"></i> reports@precisediagnostic.co.ke
-                                </a>
-                            </div>
+                <!-- Email Card - Enhanced -->
+                <div class="contact-method-card email animate-card-float" data-delay="0.3s">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-2xl shadow-lg animate-pulse-soft">
+                            <i class="fas fa-envelope"></i>
                         </div>
                     </div>
-                    <button onclick="openEmailForm()" class="contact-action-btn email-btn w-full">
-                        <i class="fas fa-paper-plane mr-2"></i> Send Message
-                    </button>
+                    <div class="pt-10">
+                        <h3 class="contact-method-title">Email Communication</h3>
+                        <p class="contact-method-description">
+                            For detailed medical inquiries, appointment requests, or health reports.
+                        </p>
+                        <div class="contact-info">
+                            <div class="email-addresses space-y-4">
+                                <div class="email-item hover-lift">
+                                    <div class="email-label">Medical Inquiries</div>
+                                    <a href="mailto:info@precisediagnostic.co.ke" class="email-link">
+                                        <i class="fas fa-user-md mr-2"></i> info@precisediagnostic.co.ke
+                                    </a>
+                                </div>
+                                <div class="email-item hover-lift">
+                                    <div class="email-label">Appointments</div>
+                                    <a href="mailto:appointments@precisediagnostic.co.ke" class="email-link">
+                                        <i class="fas fa-calendar-check mr-2"></i> appointments@precisediagnostic.co.ke
+                                    </a>
+                                </div>
+                                <div class="email-item hover-lift">
+                                    <div class="email-label">Medical Reports</div>
+                                    <a href="mailto:reports@precisediagnostic.co.ke" class="email-link">
+                                        <i class="fas fa-file-medical-alt mr-2"></i> reports@precisediagnostic.co.ke
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="openEmailComposer()" class="contact-action-btn email-btn w-full group mt-6">
+                            <i class="fas fa-paper-plane mr-2 group-hover:translate-x-1 transition-transform"></i> 
+                            Compose Email
+                        </button>
+                    </div>
                 </div>
             </div>
             
             <!-- Contact Form & Social Media -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
                 
-                <!-- Contact Form -->
+                <!-- Enhanced Contact Form -->
                 <div class="animate-slide-in-left">
-                    <div class="bg-white rounded-3xl shadow-2xl p-8">
-                        <h2 class="text-3xl font-bold mb-2">Send Us a Message</h2>
-                        <p class="text-gray-600 mb-8">We'll respond within 2 hours</p>
+                    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 form-container">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center text-white text-xl mr-4">
+                                <i class="fas fa-comment-medical"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-bold">Send a Message</h2>
+                                <p class="text-gray-600">We'll respond within 2 hours</p>
+                            </div>
+                        </div>
                         
-                        <form id="contactForm" class="space-y-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="form-label">Full Name *</label>
-                                    <input type="text" name="name" required class="form-input focus-scale" placeholder="John Doe">
+                        <form id="medicalContactForm" class="space-y-5">
+                            <div class="form-group floating-label">
+                                <input type="text" name="name" required class="form-input" placeholder=" ">
+                                <label>Full Name *</label>
+                                <div class="focus-border"></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="form-group floating-label">
+                                    <input type="tel" name="phone" required class="form-input" placeholder=" ">
+                                    <label>Phone Number *</label>
+                                    <div class="focus-border"></div>
                                 </div>
                                 
-                                <div>
-                                    <label class="form-label">Phone Number *</label>
-                                    <input type="tel" name="phone" required class="form-input focus-scale" placeholder="+254 712 345 678">
+                                <div class="form-group floating-label">
+                                    <input type="email" name="email" required class="form-input" placeholder=" ">
+                                    <label>Email Address *</label>
+                                    <div class="focus-border"></div>
                                 </div>
                             </div>
                             
-                            <div>
-                                <label class="form-label">Email Address *</label>
-                                <input type="email" name="email" required class="form-input focus-scale" placeholder="john@example.com">
-                            </div>
-                            
-                            <div>
-                                <label class="form-label">Subject *</label>
-                                <select name="subject" class="form-input focus-scale">
-                                    <option value="">Select a subject</option>
-                                    <option value="appointment">Book Appointment</option>
-                                    <option value="inquiry">General Inquiry</option>
+                            <div class="form-group floating-label">
+                                <select name="subject" class="form-input" required>
+                                    <option value=""></option>
+                                    <option value="appointment">Book Medical Appointment</option>
+                                    <option value="consultation">Medical Consultation</option>
                                     <option value="report">Medical Report Query</option>
-                                    <option value="billing">Billing Question</option>
-                                    <option value="feedback">Feedback/Suggestion</option>
-                                    <option value="other">Other</option>
+                                    <option value="billing">Billing & Insurance</option>
+                                    <option value="feedback">Feedback & Suggestions</option>
+                                    <option value="other">Other Medical Inquiry</option>
                                 </select>
+                                <label>Inquiry Type *</label>
+                                <div class="focus-border"></div>
                             </div>
                             
-                            <div>
-                                <label class="form-label">Message *</label>
-                                <textarea name="message" required class="form-textarea focus-scale" placeholder="Please describe your inquiry in detail..." rows="5"></textarea>
+                            <div class="form-group floating-label">
+                                <textarea name="message" required class="form-textarea" placeholder=" " rows="4"></textarea>
+                                <label>Medical Details *</label>
+                                <div class="focus-border"></div>
                             </div>
                             
-                            <div class="flex items-start">
-                                <input type="checkbox" name="newsletter" class="form-checkbox mt-1">
-                                <span class="ml-2 text-gray-700">Subscribe to our newsletter for health tips and updates</span>
+                            <div class="flex items-center form-checkbox-container">
+                                <input type="checkbox" name="newsletter" id="newsletter" class="form-checkbox">
+                                <label for="newsletter" class="ml-3 cursor-pointer">
+                                    Subscribe for health tips & medical updates
+                                </label>
                             </div>
                             
-                            <button type="submit" class="submit-form-btn">
-                                <i class="fas fa-paper-plane mr-2"></i> Send Message
+                            <button type="submit" class="submit-form-btn group">
+                                <span class="flex items-center justify-center">
+                                    <i class="fas fa-paper-plane mr-2 group-hover:rotate-12 transition-transform"></i>
+                                    <span>Send Medical Inquiry</span>
+                                    <div class="btn-ripple"></div>
+                                </span>
                             </button>
                         </form>
+                        
+                        <div class="mt-6 text-center">
+                            <div class="inline-flex items-center text-sm text-gray-600">
+                                <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                                <span>Your information is secure and confidential</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Social Media & Location -->
-                <div class="animate-slide-in-right">
+                <!-- Enhanced Social Media & Location -->
+                <div class="space-y-8 animate-slide-in-right">
                     
-                    <!-- Social Media -->
-                    <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
-                        <h2 class="text-3xl font-bold mb-6">Connect on Social Media</h2>
-                        <p class="text-gray-600 mb-8">Follow us for health tips, updates, and community</p>
+                    <!-- Social Media Section -->
+                    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xl mr-4">
+                                <i class="fas fa-users-medical"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-bold">Join Our Community</h2>
+                                <p class="text-gray-600">Health tips, updates, and support</p>
+                            </div>
+                        </div>
                         
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <a href="#" class="social-media-card facebook animate-pop-in" style="animation-delay: 0.1s">
-                                <div class="social-icon">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <a href="#" class="social-media-card facebook animate-social-hover" data-platform="facebook">
+                                <div class="social-icon-wrapper">
                                     <i class="fab fa-facebook-f"></i>
                                 </div>
-                                <div class="social-name">Facebook</div>
-                                <div class="social-followers">2.5K followers</div>
+                                <div class="social-content">
+                                    <div class="social-name">Facebook</div>
+                                    <div class="social-stats">
+                                        <i class="fas fa-users mr-1"></i>
+                                        <span class="follower-count" data-count="2500">2.5K</span>
+                                    </div>
+                                </div>
                             </a>
                             
-                            <a href="#" class="social-media-card twitter animate-pop-in" style="animation-delay: 0.2s">
-                                <div class="social-icon">
+                            <a href="#" class="social-media-card twitter animate-social-hover" data-platform="twitter">
+                                <div class="social-icon-wrapper">
                                     <i class="fab fa-twitter"></i>
                                 </div>
-                                <div class="social-name">Twitter</div>
-                                <div class="social-followers">1.8K followers</div>
+                                <div class="social-content">
+                                    <div class="social-name">Twitter</div>
+                                    <div class="social-stats">
+                                        <i class="fas fa-users mr-1"></i>
+                                        <span class="follower-count" data-count="1800">1.8K</span>
+                                    </div>
+                                </div>
                             </a>
                             
-                            <a href="#" class="social-media-card instagram animate-pop-in" style="animation-delay: 0.3s">
-                                <div class="social-icon">
+                            <a href="#" class="social-media-card instagram animate-social-hover" data-platform="instagram">
+                                <div class="social-icon-wrapper">
                                     <i class="fab fa-instagram"></i>
                                 </div>
-                                <div class="social-name">Instagram</div>
-                                <div class="social-followers">3.2K followers</div>
+                                <div class="social-content">
+                                    <div class="social-name">Instagram</div>
+                                    <div class="social-stats">
+                                        <i class="fas fa-users mr-1"></i>
+                                        <span class="follower-count" data-count="3200">3.2K</span>
+                                    </div>
+                                </div>
                             </a>
                             
-                            <a href="#" class="social-media-card linkedin animate-pop-in" style="animation-delay: 0.4s">
-                                <div class="social-icon">
+                            <a href="#" class="social-media-card linkedin animate-social-hover" data-platform="linkedin">
+                                <div class="social-icon-wrapper">
                                     <i class="fab fa-linkedin-in"></i>
                                 </div>
-                                <div class="social-name">LinkedIn</div>
-                                <div class="social-followers">500+ connections</div>
+                                <div class="social-content">
+                                    <div class="social-name">LinkedIn</div>
+                                    <div class="social-stats">
+                                        <i class="fas fa-users mr-1"></i>
+                                        <span class="follower-count" data-count="500">500+</span>
+                                    </div>
+                                </div>
                             </a>
                         </div>
                         
                         <!-- Additional Social Links -->
-                        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <a href="#" class="additional-social youtube">
-                                <i class="fab fa-youtube mr-3"></i> YouTube Channel
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                            <a href="#" class="additional-social youtube group">
+                                <div class="additional-social-icon">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <span>Health Education Videos</span>
+                                <i class="fas fa-arrow-right ml-auto group-hover:translate-x-1 transition-transform"></i>
                             </a>
-                            <a href="#" class="additional-social google">
-                                <i class="fab fa-google mr-3"></i> Google Business
+                            <a href="#" class="additional-social google group">
+                                <div class="additional-social-icon">
+                                    <i class="fab fa-google"></i>
+                                </div>
+                                <span>Read Patient Reviews</span>
+                                <i class="fas fa-arrow-right ml-auto group-hover:translate-x-1 transition-transform"></i>
                             </a>
                         </div>
                     </div>
                     
                     <!-- Location Card -->
-                    <div class="bg-white rounded-3xl shadow-2xl p-8">
-                        <h2 class="text-3xl font-bold mb-6">Visit Our Clinic</h2>
+                    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 flex items-center justify-center text-white text-xl mr-4">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-bold">Visit Our Facility</h2>
+                                <p class="text-gray-600">State-of-the-art medical center</p>
+                            </div>
+                        </div>
                         
                         <div class="space-y-6">
-                            <div class="flex items-start">
-                                <div class="location-detail-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
+                            <div class="location-detail-item hover-lift">
+                                <div class="location-icon">
+                                    <i class="fas fa-clinic-medical"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-bold text-lg mb-1">Physical Address</h3>
+                                    <h3 class="font-bold text-lg mb-1">Medical Center Address</h3>
                                     <p class="text-gray-700">
-                                        5th Avenue Office Suites, Fifth Ngong Avenue<br>
-                                        3rd Floor Suite No. 317<br>
+                                        5th Avenue Medical Suites, Fifth Ngong Avenue<br>
+                                        3rd Floor, Suite 317<br>
                                         P.O. Box 39471 – 00623, NAIROBI
                                     </p>
                                 </div>
                             </div>
                             
-                            <div class="flex items-start">
-                                <div class="location-detail-icon">
-                                    <i class="fas fa-clock"></i>
+                            <div class="location-detail-item hover-lift">
+                                <div class="location-icon">
+                                    <i class="fas fa-calendar-check"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-bold text-lg mb-1">Opening Hours</h3>
+                                    <h3 class="font-bold text-lg mb-2">Medical Consultation Hours</h3>
                                     <div class="space-y-2">
-                                        <div class="flex justify-between">
+                                        <div class="flex justify-between items-center schedule-item">
                                             <span>Monday - Friday</span>
-                                            <span class="font-bold">6:00 AM - 10:00 PM</span>
+                                            <span class="font-bold text-blue-600">6:00 AM - 10:00 PM</span>
                                         </div>
-                                        <div class="flex justify-between">
+                                        <div class="flex justify-between items-center schedule-item">
                                             <span>Saturday</span>
-                                            <span class="font-bold">7:00 AM - 8:00 PM</span>
+                                            <span class="font-bold text-blue-600">7:00 AM - 8:00 PM</span>
                                         </div>
-                                        <div class="flex justify-between">
+                                        <div class="flex justify-between items-center schedule-item">
                                             <span>Sunday & Holidays</span>
-                                            <span class="font-bold">8:00 AM - 6:00 PM</span>
+                                            <span class="font-bold text-blue-600">8:00 AM - 6:00 PM</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex items-start">
-                                <div class="location-detail-icon">
-                                    <i class="fas fa-car"></i>
+                            <div class="location-detail-item hover-lift">
+                                <div class="location-icon">
+                                    <i class="fas fa-wheelchair"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-bold text-lg mb-1">Parking & Accessibility</h3>
-                                    <p class="text-gray-700">
-                                        Free parking available • Wheelchair accessible • Elevator service • Ambulance bay
-                                    </p>
+                                    <h3 class="font-bold text-lg mb-1">Facility Features</h3>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <span class="facility-tag">Free Parking</span>
+                                        <span class="facility-tag">Wheelchair Access</span>
+                                        <span class="facility-tag">Ambulance Bay</span>
+                                        <span class="facility-tag">Wi-Fi</span>
+                                        <span class="facility-tag">Pharmacy</span>
+                                        <span class="facility-tag">Cafeteria</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="mt-8 grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
                             <a href="https://www.google.com/maps/dir/?api=1&destination=5th+Avenue+Office+Suites,+Fifth+Ngong+Avenue,+Nairobi" 
                                target="_blank"
-                               class="location-action-btn">
-                                <i class="fas fa-directions mr-2"></i> Get Directions
+                               class="location-action-btn group">
+                                <i class="fas fa-directions mr-2 group-hover:rotate-45 transition-transform"></i>
+                                Get Directions
                             </a>
-                            <button onclick="openMap()" class="location-action-btn bg-blue-600 text-white hover:bg-blue-700">
-                                <i class="fas fa-map mr-2"></i> View on Map
+                            <button onclick="openMedicalMap()" class="location-action-btn bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:shadow-lg group">
+                                <i class="fas fa-map-marked-alt mr-2 group-hover:scale-110 transition-transform"></i>
+                                View Medical Campus
                             </button>
                         </div>
                     </div>
-                    
                 </div>
             </div>
             
-            <!-- Live Chat Widget -->
-            <div class="mt-16">
-                <div class="bg-gradient-to-r from-blue-600 to-teal-600 rounded-3xl p-8 text-white">
-                    <div class="flex flex-col md:flex-row justify-between items-center">
-                        <div class="mb-6 md:mb-0">
-                            <h3 class="text-2xl font-bold mb-2">Need Immediate Assistance?</h3>
-                            <p class="opacity-90">Chat live with our support team</p>
+            <!-- Live Support Section -->
+            <div class="mt-12 md:mt-20 animate-fade-in">
+                <div class="bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-500 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                    <!-- Animated background elements -->
+                    <div class="absolute inset-0 overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full animate-pulse-slow"></div>
+                        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full animate-spin-slow"></div>
+                    </div>
+                    
+                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-center">
+                        <div class="mb-6 md:mb-0 text-center md:text-left">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-3">Need Medical Advice Now?</h3>
+                            <p class="opacity-90 max-w-md">Our medical team is ready to assist you with any health concerns</p>
                         </div>
-                        <button onclick="startLiveChat()" class="live-chat-btn animate-pulse-once">
-                            <i class="fas fa-comment-dots mr-2"></i> Start Live Chat
+                        <button onclick="startMedicalSupport()" class="live-support-btn group">
+                            <span class="flex items-center">
+                                <i class="fas fa-comments-medical mr-2 group-hover:animate-pulse"></i>
+                                Connect with Medical Team
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                            </span>
+                            <div class="live-support-pulse"></div>
                         </button>
                     </div>
                 </div>
@@ -400,158 +488,139 @@
 </section>
 
 <!-- Success Modal -->
-<div id="successModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-8">
-        <div class="text-center">
-            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-in">
-                <i class="fas fa-check text-green-600 text-2xl"></i>
+<div id="successModal" class="modal-overlay hidden">
+    <div class="modal-container">
+        <div class="modal-content">
+            <div class="modal-success-icon">
+                <i class="fas fa-check"></i>
             </div>
             
-            <h3 class="text-2xl font-bold mb-4" id="modalTitle">Message Sent!</h3>
+            <h3 class="modal-title">Medical Inquiry Sent!</h3>
             
-            <div class="space-y-4 mb-6">
-                <p class="text-gray-600" id="modalMessage">
-                    Thank you for contacting us. We'll get back to you within 2 hours.
+            <div class="space-y-4">
+                <p class="modal-message">
+                    Thank you for reaching out. Our medical team will review your inquiry and respond within 2 hours.
                 </p>
                 
-                <div class="bg-gray-50 rounded-xl p-4 text-left">
-                    <div class="font-bold text-sm text-gray-600 mb-2">Reference:</div>
-                    <div class="font-mono font-bold" id="modalReference">PDI-CONTACT-0000</div>
+                <div class="reference-card">
+                    <div class="reference-label">Your Reference Number</div>
+                    <div class="reference-code" id="modalReference">PDI-MED-0000</div>
+                    <div class="reference-note">Please keep this for tracking</div>
                 </div>
             </div>
             
-            <div class="space-y-3">
-                <button onclick="closeSuccessModal()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">
+            <div class="modal-actions">
+                <button onclick="closeSuccessModal()" class="modal-primary-btn">
                     Continue Browsing
                 </button>
-                <button onclick="window.location.href='/'" class="w-full border border-gray-300 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50 transition">
-                    Back to Homepage
+                <button onclick="window.location.href='/services'" class="modal-secondary-btn">
+                    View Medical Services
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Live Chat Modal -->
-<div id="chatModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl w-full max-w-md">
-        <div class="p-6 border-b">
-            <div class="flex justify-between items-center">
+<!-- Medical Support Modal -->
+<div id="supportModal" class="modal-overlay hidden">
+    <div class="modal-container max-w-md">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center">
                     <div class="w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse"></div>
-                    <h3 class="font-bold text-lg">Live Chat Support</h3>
+                    <h3 class="font-bold text-lg">Medical Support Options</h3>
                 </div>
-                <button onclick="closeChatModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
-            </div>
-        </div>
-        
-        <div class="p-6">
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-headset text-blue-600 text-3xl"></i>
-                </div>
-                <p class="text-gray-600">Our support team is ready to help you</p>
+                <button onclick="closeSupportModal()" class="modal-close-btn">&times;</button>
             </div>
             
-            <div class="space-y-3">
-                <a href="https://wa.me/254791903552" target="_blank" class="chat-option whatsapp">
-                    <i class="fab fa-whatsapp mr-3 text-2xl"></i>
-                    <div>
-                        <div class="font-bold">WhatsApp Chat</div>
-                        <div class="text-sm text-gray-600">Instant messaging</div>
+            <div class="space-y-4">
+                <a href="https://wa.me/254791903552" target="_blank" class="support-option whatsapp-option group">
+                    <div class="support-option-icon">
+                        <i class="fab fa-whatsapp"></i>
                     </div>
+                    <div class="support-option-content">
+                        <div class="support-option-title">WhatsApp Medical Chat</div>
+                        <div class="support-option-description">Instant messaging with medical staff</div>
+                    </div>
+                    <i class="fas fa-chevron-right opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </a>
                 
-                <a href="tel:+254207856359" class="chat-option phone">
-                    <i class="fas fa-phone-alt mr-3 text-2xl"></i>
-                    <div>
-                        <div class="font-bold">Voice Call</div>
-                        <div class="text-sm text-gray-600">Speak with agent</div>
+                <a href="tel:+254207856359" class="support-option phone-option group">
+                    <div class="support-option-icon">
+                        <i class="fas fa-phone-alt"></i>
                     </div>
+                    <div class="support-option-content">
+                        <div class="support-option-title">Emergency Hotline</div>
+                        <div class="support-option-description">Immediate medical assistance</div>
+                    </div>
+                    <i class="fas fa-chevron-right opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </a>
                 
-                <button onclick="startTextChat()" class="chat-option chat">
-                    <i class="fas fa-comments mr-3 text-2xl"></i>
-                    <div>
-                        <div class="font-bold">Text Chat</div>
-                        <div class="text-sm text-gray-600">Browser-based chat</div>
+                <button onclick="startVideoConsultation()" class="support-option video-option group">
+                    <div class="support-option-icon">
+                        <i class="fas fa-video"></i>
                     </div>
+                    <div class="support-option-content">
+                        <div class="support-option-title">Video Consultation</div>
+                        <div class="support-option-description">Virtual doctor appointment</div>
+                    </div>
+                    <i class="fas fa-chevron-right opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </button>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="flex items-center text-sm text-gray-600">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                    <span>For life-threatening emergencies, call emergency services immediately</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Enhanced CSS Styles -->
 <style>
-    /* Animation Classes */
-    .animate-float {
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    .animate-float-slow {
-        animation: float 8s ease-in-out infinite;
-    }
-    
-    .animate-bounce-slow {
-        animation: bounce 3s infinite;
-    }
-    
-    .animate-spin-slow {
-        animation: spin 20s linear infinite;
-    }
-    
-    .animate-fade-in-up {
-        animation: fadeInUp 0.8s ease-out;
-    }
-    
-    .animate-fade-in-up-delay {
-        animation: fadeInUp 0.8s ease-out 0.3s both;
-    }
-    
-    .animate-slide-up {
-        animation: slideUp 0.6s ease-out both;
-    }
-    
-    .animate-slide-in-left {
-        animation: slideInLeft 0.8s ease-out;
-    }
-    
-    .animate-slide-in-right {
-        animation: slideInRight 0.8s ease-out;
-    }
-    
-    .animate-pop-in {
-        animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
-    }
-    
-    .animate-pulse-once {
-        animation: pulseOnce 2s infinite;
-    }
-    
-    .animate-bounce-in {
-        animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    
-    /* Keyframes */
+    /* Enhanced Animations */
     @keyframes float {
-        0%, 100% {
-            transform: translateY(0);
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    @keyframes float-delay {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-15px) rotate(5deg); }
+        66% { transform: translateY(10px) rotate(-5deg); }
+    }
+    
+    @keyframes pulse-glow {
+        0%, 100% { 
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.3);
+            transform: scale(1);
         }
-        50% {
-            transform: translateY(-20px);
+        50% { 
+            box-shadow: 0 0 40px rgba(37, 211, 102, 0.6);
+            transform: scale(1.05);
         }
     }
     
-    @keyframes spin {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
+    @keyframes ring {
+        0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+        70% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
     
-    @keyframes fadeInUp {
+    @keyframes card-float {
+        0% { transform: translateY(0) rotateX(0); }
+        50% { transform: translateY(-10px) rotateX(5deg); }
+        100% { transform: translateY(0) rotateX(0); }
+    }
+    
+    @keyframes social-hover {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-5px); }
+    }
+    
+    @keyframes slide-up-stagger {
         from {
             opacity: 0;
             transform: translateY(30px);
@@ -562,94 +631,109 @@
         }
     }
     
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes popIn {
+    @keyframes ripple-effect {
         0% {
-            opacity: 0;
-            transform: scale(0.5);
-        }
-        70% {
-            transform: scale(1.05);
+            transform: scale(0);
+            opacity: 1;
         }
         100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-    
-    @keyframes pulseOnce {
-        0% {
-            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-        }
-        70% {
-            box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-        }
-    }
-    
-    @keyframes bounceIn {
-        0% {
+            transform: scale(4);
             opacity: 0;
-            transform: scale(0.3);
         }
-        50% {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-        70% {
-            transform: scale(0.9);
-        }
-        100% {
-            transform: scale(1);
-        }
+    }
+    
+    @keyframes typewriter {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+    
+    @keyframes blink-caret {
+        from, to { border-color: transparent; }
+        50% { border-color: currentColor; }
+    }
+    
+    /* Animation Classes */
+    .animate-float-slow {
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .animate-float-delay {
+        animation: float-delay 10s ease-in-out infinite;
+    }
+    
+    .animate-pulse-slow {
+        animation: pulse 3s ease-in-out infinite;
+    }
+    
+    .animate-pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    .animate-ring {
+        animation: ring 2s infinite;
+    }
+    
+    .animate-card-float {
+        animation: card-float 6s ease-in-out infinite;
+    }
+    
+    .animate-social-hover:hover {
+        animation: social-hover 0.3s ease-out forwards;
+    }
+    
+    .animate-slide-in-left {
+        animation: slide-up-stagger 0.8s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    .animate-slide-in-right {
+        animation: slide-up-stagger 0.8s ease-out 0.2s both;
+    }
+    
+    .animate-fade-in-up {
+        animation: slide-up-stagger 0.6s ease-out;
+    }
+    
+    .animate-fade-in-up-delay {
+        animation: slide-up-stagger 0.6s ease-out 0.3s both;
+    }
+    
+    .animate-fade-in {
+        animation: slide-up-stagger 0.8s ease-out 0.4s both;
+    }
+    
+    .animate-pop-in {
+        opacity: 0;
+        animation: slide-up-stagger 0.5s ease-out forwards;
+    }
+    
+    .animate-bounce-delay {
+        animation: bounce 3s infinite 0.5s;
     }
     
     /* Quick Stats */
     .quick-stat {
-        @apply bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20;
+        @apply bg-white/10 backdrop-blur-sm rounded-2xl p-4 md:p-6 text-center border border-white/20 hover:bg-white/15 transition-all duration-300;
     }
     
-    /* Contact Method Cards */
+    .stat-number {
+        @apply text-3xl md:text-4xl font-bold mb-2;
+        font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+    }
+    
+    .stat-label {
+        @apply text-sm md:text-base opacity-90;
+    }
+    
+    /* Enhanced Contact Cards */
     .contact-method-card {
-        @apply bg-white rounded-2xl p-8 border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300;
+        @apply bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-lg relative;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     .contact-method-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
     
     .contact-method-card.whatsapp {
@@ -661,429 +745,874 @@
     }
     
     .contact-method-card.email {
-        border-top: 4px solid #EA4335;
-    }
-    
-    .contact-icon {
-        @apply w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6;
-    }
-    
-    .contact-method-card.whatsapp .contact-icon {
-        @apply bg-green-100 text-green-600;
-    }
-    
-    .contact-method-card.phone .contact-icon {
-        @apply bg-blue-100 text-blue-600;
-    }
-    
-    .contact-method-card.email .contact-icon {
-        @apply bg-red-100 text-red-600;
+        border-top: 4px solid #FB923C;
     }
     
     .contact-method-title {
-        @apply text-2xl font-bold text-gray-900 mb-3;
+        @apply text-xl md:text-2xl font-bold text-gray-900 mb-3 text-center;
     }
     
     .contact-method-description {
-        @apply text-gray-600 mb-6;
+        @apply text-gray-600 mb-6 text-center;
+        line-height: 1.6;
     }
     
-    .contact-info {
-        @apply mb-6;
+    /* Contact Info */
+    .info-item {
+        @apply flex items-center mb-3 last:mb-0;
+    }
+    
+    .info-item i {
+        @apply mr-3 w-5 text-center;
     }
     
     /* Action Buttons */
     .contact-action-btn {
-        @apply w-full py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center;
+        @apply w-full py-3 px-4 rounded-xl font-bold transition-all duration-300 relative overflow-hidden;
     }
     
     .whatsapp-btn {
-        @apply bg-green-600 text-white hover:bg-green-700;
+        @apply bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700;
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
     }
     
     .phone-btn {
-        @apply bg-blue-600 text-white hover:bg-blue-700;
+        @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
     
     .callback-btn {
-        @apply border border-blue-600 text-blue-600 hover:bg-blue-50;
+        @apply border-2 border-blue-500 text-blue-600 hover:bg-blue-50;
     }
     
     .email-btn {
-        @apply bg-red-600 text-white hover:bg-red-700;
+        @apply bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600;
+        box-shadow: 0 4px 15px rgba(251, 146, 60, 0.3);
     }
     
-    /* Phone Numbers */
-    .phone-number {
-        @apply mb-3;
+    /* QR Code Animation */
+    .qr-code-container {
+        @apply relative;
     }
     
-    .phone-label {
-        @apply text-sm text-gray-500 mb-1;
+    .qr-code-placeholder {
+        @apply w-24 h-24 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center relative overflow-hidden;
+        border: 2px dashed #25D366;
     }
     
-    .phone-link {
-        @apply flex items-center text-blue-600 font-medium hover:text-blue-800;
+    .qr-animation {
+        @apply absolute inset-0 bg-gradient-to-r from-transparent via-green-200/30 to-transparent;
+        animation: shimmer 2s infinite;
     }
     
-    .phone-hours {
-        @apply flex items-center text-gray-700;
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
     }
     
-    /* Email Addresses */
-    .email-item {
-        @apply mb-3;
+    /* Enhanced Form Styles */
+    .form-container {
+        background: linear-gradient(145deg, #ffffff, #f8fafc);
     }
     
-    .email-label {
-        @apply text-sm text-gray-500 mb-1;
+    .form-group {
+        @apply relative;
     }
     
-    .email-link {
-        @apply flex items-center text-gray-700 hover:text-blue-600;
+    .form-group.floating-label {
+        @apply relative;
     }
     
-    /* Form Elements */
-    .form-label {
-        @apply block text-gray-700 mb-2 font-medium;
+    .form-input, .form-textarea, .form-group select {
+        @apply w-full p-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all duration-300;
+        font-size: 16px;
     }
     
-    .form-input {
-        @apply w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition;
+    .form-group.floating-label label {
+        @apply absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 transition-all duration-300 pointer-events-none;
+        background: white;
+        padding: 0 8px;
     }
     
-    .form-textarea {
-        @apply w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition;
+    .form-input:focus + label,
+    .form-input:not(:placeholder-shown) + label,
+    .form-textarea:focus + label,
+    .form-textarea:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:valid + label {
+        @apply top-0 text-sm text-blue-600;
+        transform: translateY(-50%) scale(0.9);
+    }
+    
+    .focus-border {
+        @apply absolute bottom-0 left-0 w-0 h-1 bg-blue-500 transition-all duration-300;
+    }
+    
+    .form-input:focus ~ .focus-border,
+    .form-textarea:focus ~ .focus-border,
+    .form-group select:focus ~ .focus-border {
+        @apply w-full;
+    }
+    
+    .form-checkbox-container {
+        @apply p-3 bg-gray-50 rounded-xl;
     }
     
     .form-checkbox {
-        @apply rounded border-gray-300 text-blue-600 focus:ring-blue-500;
+        @apply w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-offset-0;
     }
     
-    .focus-scale:focus {
-        transform: scale(1.01);
-    }
-    
+    /* Submit Button */
     .submit-form-btn {
-        @apply w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition flex items-center justify-center;
+        @apply w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 rounded-xl font-bold hover:shadow-xl transition-all duration-300 relative overflow-hidden;
+    }
+    
+    .btn-ripple {
+        @apply absolute inset-0 bg-white opacity-0;
+        border-radius: 50%;
+        transform: scale(0);
     }
     
     /* Social Media Cards */
     .social-media-card {
-        @apply rounded-2xl p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl;
+        @apply rounded-xl p-4 transition-all duration-300 cursor-pointer;
     }
     
     .social-media-card.facebook {
-        @apply bg-blue-50 border border-blue-100 text-blue-700;
+        @apply bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200;
     }
     
     .social-media-card.twitter {
-        @apply bg-sky-50 border border-sky-100 text-sky-700;
+        @apply bg-gradient-to-br from-sky-50 to-sky-100 border border-sky-200;
     }
     
     .social-media-card.instagram {
-        @apply bg-pink-50 border border-pink-100 text-pink-700;
+        @apply bg-gradient-to-br from-pink-50 to-rose-100 border border-pink-200;
     }
     
     .social-media-card.linkedin {
-        @apply bg-blue-50 border border-blue-100 text-blue-700;
+        @apply bg-gradient-to-br from-blue-50 to-indigo-100 border border-indigo-200;
     }
     
-    .social-icon {
-        @apply text-3xl mb-2;
+    .social-icon-wrapper {
+        @apply w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-3 mx-auto;
+    }
+    
+    .social-media-card.facebook .social-icon-wrapper {
+        @apply bg-blue-100 text-blue-600;
+    }
+    
+    .social-media-card.twitter .social-icon-wrapper {
+        @apply bg-sky-100 text-sky-600;
+    }
+    
+    .social-media-card.instagram .social-icon-wrapper {
+        @apply bg-gradient-to-r from-pink-100 to-rose-100 text-pink-600;
+    }
+    
+    .social-media-card.linkedin .social-icon-wrapper {
+        @apply bg-blue-100 text-blue-600;
+    }
+    
+    .social-content {
+        @apply text-center;
     }
     
     .social-name {
         @apply font-bold mb-1;
     }
     
-    .social-followers {
-        @apply text-sm opacity-75;
+    .social-stats {
+        @apply text-sm opacity-75 flex items-center justify-center;
     }
     
     /* Additional Social Links */
     .additional-social {
-        @apply border border-gray-200 rounded-xl p-4 text-center hover:bg-gray-50 transition flex items-center justify-center;
+        @apply border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 flex items-center;
     }
     
     .additional-social.youtube {
-        @apply text-red-600;
+        @apply hover:border-red-200 hover:bg-red-50;
     }
     
     .additional-social.google {
-        @apply text-blue-600;
+        @apply hover:border-blue-200 hover:bg-blue-50;
+    }
+    
+    .additional-social-icon {
+        @apply w-10 h-10 rounded-lg flex items-center justify-center mr-3;
+    }
+    
+    .additional-social.youtube .additional-social-icon {
+        @apply bg-red-100 text-red-600;
+    }
+    
+    .additional-social.google .additional-social-icon {
+        @apply bg-blue-100 text-blue-600;
     }
     
     /* Location Details */
-    .location-detail-icon {
-        @apply w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mr-4 flex-shrink-0;
+    .location-detail-item {
+        @apply flex items-start p-4 rounded-xl hover:bg-gray-50 transition-all duration-300;
+    }
+    
+    .location-icon {
+        @apply w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-xl mr-4 flex-shrink-0;
+    }
+    
+    .schedule-item {
+        @apply py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors;
+    }
+    
+    .facility-tag {
+        @apply px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm;
     }
     
     .location-action-btn {
-        @apply w-full border border-blue-600 text-blue-600 py-3 rounded-xl font-medium hover:bg-blue-50 transition flex items-center justify-center;
+        @apply w-full border-2 border-blue-500 text-blue-600 py-3 rounded-xl font-medium hover:bg-blue-50 transition-all duration-300 flex items-center justify-center;
     }
     
-    /* Live Chat */
-    .live-chat-btn {
-        @apply bg-white text-blue-600 px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition flex items-center;
+    /* Live Support */
+    .live-support-btn {
+        @apply bg-white text-blue-600 px-6 py-4 rounded-xl font-bold hover:shadow-2xl transition-all duration-300 relative overflow-hidden flex items-center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
     
-    /* Chat Options */
-    .chat-option {
-        @apply flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition;
+    .live-support-pulse {
+        @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+        animation: shimmer 2s infinite;
     }
     
-    .chat-option.whatsapp:hover {
-        @apply bg-green-50 border-green-200;
+    /* Modals */
+    .modal-overlay {
+        @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4;
     }
     
-    .chat-option.phone:hover {
-        @apply bg-blue-50 border-blue-200;
+    .modal-container {
+        @apply bg-white rounded-2xl max-w-md w-full;
+        animation: modal-appear 0.3s ease-out;
     }
     
-    .chat-option.chat:hover {
-        @apply bg-purple-50 border-purple-200;
+    @keyframes modal-appear {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+    
+    .modal-content {
+        @apply p-6 md:p-8;
+    }
+    
+    .modal-success-icon {
+        @apply w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-6;
+        animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .modal-title {
+        @apply text-2xl font-bold text-center mb-4;
+    }
+    
+    .modal-message {
+        @apply text-gray-600 text-center mb-6;
+    }
+    
+    .reference-card {
+        @apply bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100;
+    }
+    
+    .reference-label {
+        @apply text-sm text-gray-600 mb-1;
+    }
+    
+    .reference-code {
+        @apply font-mono font-bold text-xl text-blue-600 mb-1;
+    }
+    
+    .reference-note {
+        @apply text-xs text-gray-500;
+    }
+    
+    .modal-actions {
+        @apply space-y-3 mt-6;
+    }
+    
+    .modal-primary-btn {
+        @apply w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-300;
+    }
+    
+    .modal-secondary-btn {
+        @apply w-full border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors;
+    }
+    
+    .modal-close-btn {
+        @apply text-2xl text-gray-500 hover:text-gray-700 transition-colors;
+    }
+    
+    /* Support Options */
+    .support-option {
+        @apply flex items-center p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-300;
+    }
+    
+    .support-option-icon {
+        @apply w-12 h-12 rounded-xl flex items-center justify-center text-xl mr-4;
+    }
+    
+    .whatsapp-option {
+        @apply hover:border-green-200 hover:bg-green-50;
+    }
+    
+    .whatsapp-option .support-option-icon {
+        @apply bg-green-100 text-green-600;
+    }
+    
+    .phone-option {
+        @apply hover:border-blue-200 hover:bg-blue-50;
+    }
+    
+    .phone-option .support-option-icon {
+        @apply bg-blue-100 text-blue-600;
+    }
+    
+    .video-option {
+        @apply hover:border-purple-200 hover:bg-purple-50;
+    }
+    
+    .video-option .support-option-icon {
+        @apply bg-purple-100 text-purple-600;
+    }
+    
+    .support-option-content {
+        @apply flex-1;
+    }
+    
+    .support-option-title {
+        @apply font-bold;
+    }
+    
+    .support-option-description {
+        @apply text-sm text-gray-600;
+    }
+    
+    /* Scroll Indicator */
+    .scroll-indicator {
+        @apply text-center;
+    }
+    
+    .scroll-indicator i {
+        @apply text-2xl;
+        animation: bounce 2s infinite;
+    }
+    
+    /* Utility Classes */
+    .hover-lift:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Media Queries */
+    @media (max-width: 640px) {
+        .contact-method-card {
+            @apply p-5;
+        }
+        
+        .contact-method-title {
+            @apply text-xl;
+        }
+        
+        .modal-container {
+            @apply max-w-full;
+        }
     }
 </style>
 
+<!-- JavaScript Magic -->
 <script>
-    // Initialize page with animations
+    // Initialize page with enhanced animations
     document.addEventListener('DOMContentLoaded', function() {
-        // Animate contact method cards
-        animateContactCards();
+        // Initialize number counting animation
+        initNumberCounters();
         
-        // Initialize form validation
-        initContactForm();
+        // Initialize enhanced form
+        initEnhancedContactForm();
         
-        // Add hover effects
-        initHoverEffects();
+        // Initialize interactive elements
+        initInteractiveElements();
         
-        // Initialize WhatsApp QR code
-        initWhatsAppQR();
+        // Initialize scroll animations
+        initScrollAnimations();
+        
+        // Initialize social media hover effects
+        initSocialMediaEffects();
+        
+        // Initialize WhatsApp QR code animation
+        initWhatsAppQRAnimation();
+        
+        // Initialize ripple effects
+        initRippleEffects();
+        
+        // Initialize typing effect for headings
+        initTypingEffect();
     });
 
-    // Animate contact cards with staggered effect
-    function animateContactCards() {
-        const cards = document.querySelectorAll('.animate-slide-up');
-        cards.forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.1}s`;
+    // Animated number counters
+    function initNumberCounters() {
+        const counters = document.querySelectorAll('.stat-number');
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const increment = target / 50;
+            let current = 0;
+            
+            const updateCounter = () => {
+                if (current < target) {
+                    current += increment;
+                    counter.textContent = Math.ceil(current);
+                    setTimeout(updateCounter, 30);
+                } else {
+                    counter.textContent = target;
+                }
+            };
+            
+            // Start counter when element is in viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateCounter();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            observer.observe(counter);
         });
     }
 
-    // Initialize contact form with validation
-    function initContactForm() {
-        const form = document.getElementById('contactForm');
+    // Enhanced contact form with validation
+    function initEnhancedContactForm() {
+        const form = document.getElementById('medicalContactForm');
+        const inputs = form.querySelectorAll('.form-input, .form-textarea, select');
         
-        form.addEventListener('submit', function(e) {
+        // Add focus effects
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+            
+            // Add character counter for textarea
+            if (input.tagName === 'TEXTAREA') {
+                const counter = document.createElement('div');
+                counter.className = 'text-right text-sm text-gray-500 mt-1';
+                counter.innerHTML = `<span class="char-count">0</span>/500`;
+                input.parentElement.appendChild(counter);
+                
+                input.addEventListener('input', function() {
+                    const count = this.value.length;
+                    counter.querySelector('.char-count').textContent = count;
+                    
+                    if (count > 400) {
+                        counter.classList.add('text-amber-600');
+                    } else {
+                        counter.classList.remove('text-amber-600');
+                    }
+                });
+            }
+        });
+        
+        // Form submission with enhanced feedback
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validate form
             if (!form.checkValidity()) {
-                form.reportValidity();
+                // Add shake animation to invalid fields
+                const invalidFields = form.querySelectorAll(':invalid');
+                invalidFields.forEach(field => {
+                    field.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        field.style.animation = '';
+                    }, 500);
+                });
                 return;
             }
             
-            // Show loading state
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+            
+            // Show loading state
+            submitBtn.innerHTML = `
+                <span class="flex items-center justify-center">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    <span>Sending Medical Inquiry...</span>
+                </span>
+            `;
             submitBtn.disabled = true;
             
-            // Simulate API call
-            setTimeout(() => {
-                // Generate reference
-                const refNumber = Math.floor(1000 + Math.random() * 9000);
-                const reference = `PDI-CONTACT-${refNumber}`;
-                
-                // Show success modal
-                document.getElementById('modalReference').textContent = reference;
-                document.getElementById('successModal').classList.remove('hidden');
-                
-                // Reset form
-                form.reset();
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Log submission (in real app, send to backend)
-                const formData = new FormData(form);
-                console.log('Contact form submitted:', {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    phone: formData.get('phone'),
-                    subject: formData.get('subject'),
-                    message: formData.get('message'),
-                    reference: reference
-                });
-            }, 1500);
+            // Simulate API call with enhanced animation
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Generate medical reference number
+            const refNumber = Math.floor(10000 + Math.random() * 90000);
+            const reference = `PDI-MED-${refNumber}`;
+            
+            // Show success modal with enhanced animation
+            showSuccessModal(reference);
+            
+            // Reset form
+            form.reset();
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            
+            // Log to console (in production, send to backend)
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            console.log('Medical inquiry submitted:', {
+                ...data,
+                reference: reference,
+                timestamp: new Date().toISOString()
+            });
         });
     }
 
-    // Initialize hover effects
-    function initHoverEffects() {
-        // Add ripple effect to all buttons
-        document.querySelectorAll('button, .contact-action-btn, .submit-form-btn, .live-chat-btn, .location-action-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                createRipple(e, this);
+    // Interactive elements with animations
+    function initInteractiveElements() {
+        // Schedule callback with enhanced UI
+        window.scheduleMedicalCallback = function() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-container max-w-sm">
+                    <div class="modal-content">
+                        <h3 class="text-xl font-bold mb-4">Schedule Medical Callback</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Your Name</label>
+                                <input type="text" class="form-input" placeholder="Full name" id="callbackName">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Phone Number</label>
+                                <input type="tel" class="form-input" placeholder="+254 XXX XXX XXX" id="callbackPhone">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Preferred Time</label>
+                                <select class="form-input" id="callbackTime">
+                                    <option>Within 30 minutes</option>
+                                    <option>Within 1 hour</option>
+                                    <option>Within 2 hours</option>
+                                    <option>Specific time (we'll call)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3 mt-6">
+                            <button onclick="this.closest('.modal-overlay').remove()" 
+                                    class="flex-1 border border-gray-300 rounded-xl py-3 hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button onclick="confirmMedicalCallback()" 
+                                    class="flex-1 bg-blue-600 text-white rounded-xl py-3 hover:bg-blue-700">
+                                Schedule Call
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.classList.remove('hidden');
+        };
+        
+        // Email composer
+        window.openEmailComposer = function() {
+            const subject = 'Medical Inquiry - Precise Diagnostics';
+            const body = `Dear Medical Team,\n\nI would like to inquire about:\n\n[Please describe your medical inquiry here]\n\nBest regards,\n[Your Name]`;
+            
+            window.location.href = `mailto:info@precisediagnostic.co.ke?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        };
+        
+        // Medical map view
+        window.openMedicalMap = function() {
+            const address = '5th Avenue Office Suites, Fifth Ngong Avenue, Nairobi';
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+            
+            // Show notification
+            showNotification('Opening medical facility location in Google Maps...', 'info');
+        };
+        
+        // Start medical support
+        window.startMedicalSupport = function() {
+            document.getElementById('supportModal').classList.remove('hidden');
+        };
+        
+        // Close support modal
+        window.closeSupportModal = function() {
+            document.getElementById('supportModal').classList.add('hidden');
+        };
+        
+        // Start video consultation
+        window.startVideoConsultation = function() {
+            showNotification('Video consultation feature coming soon! Please use WhatsApp or phone for now.', 'info');
+            closeSupportModal();
+        };
+    }
+
+    // Scroll animations with parallax effect
+    function initScrollAnimations() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
             });
+        }, observerOptions);
+        
+        // Observe all animated elements
+        document.querySelectorAll('.animate-pop-in, .animate-slide-up, .animate-fade-in').forEach(el => {
+            const delay = el.getAttribute('data-delay');
+            if (delay) {
+                el.style.animationDelay = delay;
+            }
+            observer.observe(el);
         });
         
-        // Add scale effect on hover for cards
-        const contactCards = document.querySelectorAll('.contact-method-card');
-        contactCards.forEach(card => {
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            const heroBg = document.querySelector('.medical-gradient');
+            
+            if (heroBg) {
+                heroBg.style.transform = `translate3d(0, ${rate}px, 0)`;
+            }
+        });
+    }
+
+    // Social media hover effects
+    function initSocialMediaEffects() {
+        const socialCards = document.querySelectorAll('.social-media-card');
+        
+        socialCards.forEach(card => {
             card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px) scale(1.02)';
+                const platform = this.getAttribute('data-platform');
+                const icon = this.querySelector('i');
+                
+                // Add platform-specific animation
+                switch(platform) {
+                    case 'facebook':
+                        icon.style.transform = 'scale(1.2)';
+                        break;
+                    case 'instagram':
+                        icon.style.animation = 'spin 1s linear';
+                        break;
+                    case 'twitter':
+                        icon.style.transform = 'translateY(-5px)';
+                        break;
+                    case 'linkedin':
+                        icon.style.transform = 'rotate(10deg)';
+                        break;
+                }
             });
             
             card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
+                const icon = this.querySelector('i');
+                icon.style.transform = '';
+                icon.style.animation = '';
             });
         });
     }
 
-    // Ripple effect function
-    function createRipple(event, element) {
-        const ripple = document.createElement('span');
-        const rect = element.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = event.clientX - rect.left - size / 2;
-        const y = event.clientY - rect.top - size / 2;
-        
-        ripple.style.cssText = `
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.7);
-            transform: scale(0);
-            animation: ripple-animation 0.6s linear;
-            width: ${size}px;
-            height: ${size}px;
-            top: ${y}px;
-            left: ${x}px;
-            pointer-events: none;
-        `;
-        
-        element.style.position = 'relative';
-        element.style.overflow = 'hidden';
-        element.appendChild(ripple);
-        
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
-    }
-
-    // Add CSS for ripple animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Initialize WhatsApp QR code
-    function initWhatsAppQR() {
-        // In a real implementation, this would generate a QR code
-        // For now, we'll just animate the placeholder
-        const qrPlaceholder = document.querySelector('.whatsapp-qr');
-        if (qrPlaceholder) {
-            qrPlaceholder.style.opacity = '0';
-            qrPlaceholder.style.transform = 'scale(0.8)';
-            
+    // WhatsApp QR code animation
+    function initWhatsAppQRAnimation() {
+        const qrContainer = document.querySelector('.qr-code-placeholder');
+        if (qrContainer) {
             setTimeout(() => {
-                qrPlaceholder.style.transition = 'all 0.5s ease-out';
-                qrPlaceholder.style.opacity = '1';
-                qrPlaceholder.style.transform = 'scale(1)';
+                qrContainer.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                qrContainer.style.opacity = '1';
+                qrContainer.style.transform = 'scale(1) rotate(0deg)';
             }, 1000);
         }
     }
 
-    // Schedule callback function
-    function scheduleCallback() {
-        const name = prompt('Please enter your name for callback:');
-        if (name) {
-            const phone = prompt('Please enter your phone number:');
-            if (phone) {
-                alert(`Thank you ${name}! We'll call you at ${phone} within 30 minutes.`);
-                
-                // In real implementation, send to backend
-                console.log('Callback scheduled:', { name, phone });
-            }
-        }
-    }
-
-    // Open email form function
-    function openEmailForm() {
-        // Scroll to contact form
-        document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' });
-        
-        // Highlight email subject
-        const subjectSelect = document.querySelector('select[name="subject"]');
-        subjectSelect.value = 'inquiry';
-        subjectSelect.focus();
-        
-        // Add animation
-        subjectSelect.style.animation = 'pulseOnce 1s';
-        setTimeout(() => {
-            subjectSelect.style.animation = '';
-        }, 1000);
-    }
-
-    // Open map function
-    function openMap() {
-        // In a real implementation, open Google Maps
-        const address = encodeURIComponent('5th Avenue Office Suites, Fifth Ngong Avenue, 3rd Floor Suite No. 317, Nairobi');
-        window.open(`https://www.google.com/maps/search/?api=1&query=${address}`, '_blank');
-    }
-
-    // Start live chat function
-    function startLiveChat() {
-        document.getElementById('chatModal').classList.remove('hidden');
-    }
-
-    function closeChatModal() {
-        document.getElementById('chatModal').classList.add('hidden');
-    }
-
-    // Start text chat function
-    function startTextChat() {
-        alert('Live text chat feature would be integrated here. For now, please use WhatsApp or phone.');
-        closeChatModal();
-    }
-
-    // Close success modal
-    function closeSuccessModal() {
-        const modal = document.getElementById('successModal');
-        modal.style.opacity = '1';
-        
-        setTimeout(() => {
-            modal.style.transition = 'opacity 0.3s ease-out';
-            modal.style.opacity = '0';
+    // Ripple effect for buttons
+    function initRippleEffects() {
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('.contact-action-btn, .submit-form-btn, .live-support-btn, .location-action-btn');
             
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.style.opacity = '';
-            }, 300);
-        }, 100);
-    }
-
-    // Social media analytics (simulated)
-    function updateSocialStats() {
-        // In a real implementation, this would fetch from APIs
-        const socialCards = document.querySelectorAll('.social-media-card');
-        
-        socialCards.forEach(card => {
-            const followersEl = card.querySelector('.social-followers');
-            if (followersEl) {
-                const current = parseInt(followersEl.textContent);
-                const newCount = current + Math.floor(Math.random() * 10);
-                followersEl.textContent = newCount.toLocaleString() + ' followers';
+            if (target) {
+                const ripple = document.createElement('span');
+                const rect = target.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.7);
+                    transform: scale(0);
+                    animation: ripple-effect 0.6s linear;
+                    width: ${size}px;
+                    height: ${size}px;
+                    top: ${y}px;
+                    left: ${x}px;
+                    pointer-events: none;
+                    z-index: 1;
+                `;
+                
+                target.style.position = 'relative';
+                target.style.overflow = 'hidden';
+                target.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
             }
         });
     }
 
-    // Update social stats every 30 seconds (simulated growth)
-    setInterval(updateSocialStats, 30000);
+    // Typing effect for headings
+    function initTypingEffect() {
+        const heroTitle = document.querySelector('.font-heading');
+        if (heroTitle) {
+            const text = heroTitle.textContent;
+            heroTitle.textContent = '';
+            heroTitle.style.borderRight = '2px solid';
+            
+            let i = 0;
+            const typeWriter = () => {
+                if (i < text.length) {
+                    heroTitle.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 50);
+                } else {
+                    heroTitle.style.borderRight = 'none';
+                }
+            };
+            
+            // Start typing when hero is in view
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    typeWriter();
+                    observer.unobserve(heroTitle);
+                }
+            });
+            
+            observer.observe(heroTitle);
+        }
+    }
+
+    // Show success modal with animation
+    function showSuccessModal(reference) {
+        const modal = document.getElementById('successModal');
+        const refElement = document.getElementById('modalReference');
+        
+        refElement.textContent = reference;
+        modal.classList.remove('hidden');
+        
+        // Add confetti effect
+        createConfetti();
+    }
+
+    // Close success modal
+    window.closeSuccessModal = function() {
+        const modal = document.getElementById('successModal');
+        modal.style.opacity = '1';
+        
+        modal.style.transition = 'opacity 0.3s ease-out';
+        modal.style.opacity = '0';
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.style.opacity = '1';
+        }, 300);
+    };
+
+    // Confetti effect for success
+    function createConfetti() {
+        const colors = ['#3B82F6', '#10B981', '#8B5CF6', '#EF4444', '#F59E0B'];
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.cssText = `
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                top: -20px;
+                left: ${Math.random() * 100}vw;
+                border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+                z-index: 1000;
+                animation: fall ${Math.random() * 2 + 1}s linear forwards;
+            `;
+            
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 3000);
+        }
+        
+        // Add confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(${Math.random() * 360}deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg transform translate-x-full transition-transform duration-300 ${
+            type === 'info' ? 'bg-blue-600 text-white' : 
+            type === 'success' ? 'bg-green-600 text-white' : 
+            'bg-amber-600 text-white'
+        }`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 10);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Confirm medical callback
+    window.confirmMedicalCallback = function() {
+        const name = document.getElementById('callbackName').value;
+        const phone = document.getElementById('callbackPhone').value;
+        const time = document.getElementById('callbackTime').value;
+        
+        if (!name || !phone) {
+            showNotification('Please fill in all fields', 'warning');
+            return;
+        }
+        
+        const modal = document.querySelector('.modal-overlay');
+        modal.remove();
+        
+        showNotification(`Callback scheduled! We'll call you ${time.toLowerCase()}`, 'success');
+        
+        console.log('Medical callback scheduled:', { name, phone, time });
+    };
 </script>
 @endsection
