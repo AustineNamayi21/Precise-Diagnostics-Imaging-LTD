@@ -213,6 +213,7 @@
                 
                 <!-- Patient Form -->
                 <form id="appointmentForm" class="space-y-6">
+                    @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="form-label">Full Name *</label>
@@ -281,7 +282,7 @@
                     <button onclick="prevStep(2)" class="prev-step-btn hover-lift">
                         <i class="fas fa-arrow-left mr-2"></i> Back
                     </button>
-                    <button onclick="submitAppointment()" class="submit-btn pulse-once">
+                    <button onclick="submitAppointmentBackend()" class="submit-btn pulse-once">
                         <i class="fas fa-paper-plane mr-2"></i> Submit Booking Request
                     </button>
                 </div>
@@ -753,6 +754,8 @@
 </style>
 
 <script>
+    // ================ FRONTEND BOOKING LOGIC ================
+    
     // Booking state
     let bookingState = {
         service: null,
@@ -841,8 +844,8 @@
     }
 
     // Add CSS for ripple animation
-    const style = document.createElement('style');
-    style.textContent = `
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
         @keyframes ripple-animation {
             to {
                 transform: scale(4);
@@ -850,7 +853,7 @@
             }
         }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(rippleStyle);
 
     // Floating animation for hero elements
     function startFloatingAnimation() {
@@ -1171,46 +1174,6 @@
         return `${displayHour}:${minutes} ${ampm}`;
     }
 
-    // Submit appointment with confetti
-    function submitAppointment() {
-        // Validate form
-        const form = document.getElementById('appointmentForm');
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            shakeElement(form);
-            return;
-        }
-        
-        // Add loading animation to submit button
-        const submitBtn = event.target;
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
-        submitBtn.disabled = true;
-        
-        // Simulate API call
-        setTimeout(() => {
-            // Generate reference number
-            const refNumber = Math.floor(1000 + Math.random() * 9000);
-            const reference = `PDI-${new Date().toISOString().slice(0,10).replace(/-/g, '')}-${refNumber}`;
-            document.getElementById('referenceDisplay').textContent = reference;
-            
-            // Show success modal
-            document.getElementById('successModal').classList.remove('hidden');
-            
-            // Launch confetti
-            launchConfetti();
-            
-            // Reset button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            
-            console.log('Appointment request submitted:', {
-                ...bookingState,
-                formData: new FormData(form)
-            });
-        }, 1500);
-    }
-
     // Confetti animation
     function launchConfetti() {
         const container = document.getElementById('confetti-container');
@@ -1277,5 +1240,148 @@
         
         showStep(1);
     }
+
+    // ================ BACKEND INTEGRATION ================
+
+    /**
+     * Submit appointment to the backend - FIXED VERSION
+     */
+    async function submitAppointmentBackend() {
+        // Validate form
+        const form = document.getElementById('appointmentForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            shakeElement(form);
+            return;
+        }
+
+        // Get selected date from calendar
+        const selectedDay = document.querySelector('.calendar-day.selected');
+        if (!selectedDay) {
+            showError('Please select a date');
+            return;
+        }
+
+        // Get selected time slot
+        const selectedTimeSlot = document.querySelector('.time-slot.selected');
+        if (!selectedTimeSlot) {
+            showError('Please select a time slot');
+            return;
+        }
+
+        // Prepare data for API
+        const formData = new FormData(form);
+        const appointmentData = {
+            service: bookingState.service,
+            appointment_date: selectedDay.dataset.date, // Use the data-date attribute
+            appointment_time: selectedTimeSlot.dataset.time, // Use the data-time attribute directly
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            email: formData.get('email'),
+            dob: formData.get('dob'),
+            reason: formData.get('reason'),
+            insurance: formData.get('insurance'),
+            contact_whatsapp: formData.get('contact_whatsapp') === 'on',
+            contact_sms: formData.get('contact_sms') === 'on',
+            contact_email: formData.get('contact_email') === 'on',
+            terms: true
+        };
+
+        console.log('Submitting appointment:', appointmentData);
+
+        // Show loading state
+        const submitBtn = event.target;
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+        submitBtn.disabled = true;
+
+        try {
+            // FIXED: Changed from '/api/appointments/book' to '/appointments'
+            const response = await fetch('/appointments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(appointmentData)
+            });
+
+            const data = await response.json();
+            console.log('API Response:', data);
+
+            if (data.success) {
+                // Update success modal with real data from backend
+                document.getElementById('referenceDisplay').textContent = data.appointment.appointment_number;
+                
+                // Show the modal
+                document.getElementById('successModal').classList.remove('hidden');
+                
+                // Launch confetti
+                launchConfetti();
+                
+                // Reset form after successful submission
+                setTimeout(() => {
+                    resetBooking();
+                }, 3000);
+                
+            } else {
+                showError(data.message || 'Failed to book appointment');
+            }
+        } catch (error) {
+            console.error('Appointment submission failed:', error);
+            showError('Network error. Please try again or contact support.');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+    /**
+     * Show error message
+     */
+    function showError(message) {
+        // Create error toast
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg z-50';
+        toast.style.animation = 'slideInRight 0.3s ease-out';
+        toast.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-3"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 5000);
+    }
+
+    // Add animation CSS for error toasts if not already present
+    if (!document.querySelector('#error-animations')) {
+        const errorStyle = document.createElement('style');
+        errorStyle.id = 'error-animations';
+        errorStyle.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(errorStyle);
+    }
+
+    // Override the old submitAppointment function to use the new backend version
+    window.submitAppointment = function() {
+        console.warn('Using old submitAppointment. Please use submitAppointmentBackend instead.');
+        submitAppointmentBackend();
+    };
 </script>
 @endsection

@@ -1,17 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\Web\AppointmentController;
 
 // Homepage
 Route::get('/', function () {
@@ -33,10 +23,21 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
+// ==================== APPOINTMENT SYSTEM ====================
+
 // Appointment Booking Page
-Route::get('/appointments', function () {
-    return view('appointments.book');
-})->name('appointments');
+Route::get('/appointments', [AppointmentController::class, 'book'])->name('appointments');
+
+// Handle Appointment Booking
+Route::post('/appointments', [AppointmentController::class, 'storeWeb'])->name('appointments.store');
+
+// Appointment Success Page
+Route::get('/appointments/success', [AppointmentController::class, 'success'])->name('appointments.success');
+
+// My Appointments (for logged-in users)
+Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])->name('appointments.my');
+
+// ==================== STATIC PAGES ====================
 
 // Privacy Policy Page
 Route::get('/privacy-policy', function () {
