@@ -27,6 +27,7 @@ class StoreAppointmentRequest extends FormRequest
             'contact_sms' => ['nullable', 'boolean'],
             'contact_email' => ['nullable', 'boolean'],
             'terms' => ['required', 'accepted'],
+            'contact_preferences' => ['nullable', 'array'],
         ];
     }
 
@@ -47,13 +48,14 @@ class StoreAppointmentRequest extends FormRequest
     protected function prepareForValidation()
     {
         $contactPreferences = [];
-        if ($this->has('contact_whatsapp')) {
+        
+        if ($this->has('contact_whatsapp') && $this->contact_whatsapp) {
             $contactPreferences['whatsapp'] = true;
         }
-        if ($this->has('contact_sms')) {
+        if ($this->has('contact_sms') && $this->contact_sms) {
             $contactPreferences['sms'] = true;
         }
-        if ($this->has('contact_email')) {
+        if ($this->has('contact_email') && $this->contact_email) {
             $contactPreferences['email'] = true;
         }
 

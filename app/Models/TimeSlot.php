@@ -24,8 +24,8 @@ class TimeSlot extends Model
 
     protected $casts = [
         'slot_date' => 'date',
-        'start_time' => 'datetime:H:i',
-        'end_time' => 'datetime:H:i',
+        'start_time' => 'string',   // FIXED: was wrong datetime cast
+        'end_time' => 'string',     // FIXED
         'is_active' => 'boolean',
         'booked_count' => 'integer',
         'max_appointments' => 'integer',
@@ -38,7 +38,8 @@ class TimeSlot extends Model
 
     public function radiologist()
     {
-        return $this->belongsTo(User::class, 'radiologist_id')->where('user_type', 'radiologist');
+        return $this->belongsTo(User::class, 'radiologist_id')
+            ->where('user_type', 'radiologist');
     }
 
     public function scopeAvailable($query)

@@ -28,14 +28,18 @@ Route::get('/contact', function () {
 // Appointment Booking Page
 Route::get('/appointments', [AppointmentController::class, 'book'])->name('appointments');
 
-// Handle Appointment Booking
-Route::post('/appointments', [AppointmentController::class, 'storeWeb'])->name('appointments.store');
+// Handle Appointment Booking (with CSRF protection)
+Route::post('/appointments', [AppointmentController::class, 'storeWeb'])
+    ->name('appointments.store')
+    ->middleware('web'); // Ensure web middleware for CSRF
 
 // Appointment Success Page
 Route::get('/appointments/success', [AppointmentController::class, 'success'])->name('appointments.success');
 
 // My Appointments (for logged-in users)
-Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])->name('appointments.my');
+Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])
+    ->name('appointments.my')
+    ->middleware('auth');
 
 // ==================== STATIC PAGES ====================
 

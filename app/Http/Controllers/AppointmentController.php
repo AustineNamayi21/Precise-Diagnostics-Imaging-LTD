@@ -16,13 +16,15 @@ class AppointmentController extends Controller
     {
         $services = Service::active()
             ->orderBy('display_order')
-            ->get(['id', 'name', 'code', 'description', 'price', 
-                  'discounted_price', 'duration_minutes', 'icon_class', 
-                  'requires_fasting', 'preparation_instructions']);
+            ->get([
+                'id', 'name', 'code', 'description', 'price',
+                'discounted_price', 'duration_minutes', 'icon_class',
+                'requires_fasting', 'preparation_instructions'
+            ]);
 
-        $services->each(function ($service) {
-            $service->formatted_price = $service->getFormattedPrice();
-        });
+        $services->each(fn ($service) =>
+            $service->formatted_price = $service->getFormattedPrice()
+        );
 
         return response()->json([
             'success' => true,
@@ -40,22 +42,18 @@ class AppointmentController extends Controller
         $service = Service::findOrFail($request->service_id);
         $date = Carbon::parse($request->date);
 
-        $maxAdvanceDate = now()->addDays($service->advance_booking_days);
-        if ($date->gt($maxAdvanceDate)) {
+        if ($date->gt(now()->addDays($service->advance_booking_days))) {
             return response()->json([
                 'success' => false,
-                'message' => "Bookings for this service are only available up to {$service->advance_booking_days} days in advance."
+                'message' => "Bookings are only available up to {$service->advance_booking_days} days in advance."
             ]);
         }
-
-        $availableSlots = $this->getAvailableSlots($service, $date);
 
         return response()->json([
             'success' => true,
             'service' => $service->only(['id', 'name', 'duration_minutes']),
             'date' => $date->format('Y-m-d'),
-            'available_slots' => $availableSlots,
-            'max_advance_days' => $service->advance_booking_days,
+            'available_slots' => $this->getAvailableSlots($service, $date),
             'requires_fasting' => $service->requires_fasting,
         ]);
     }
@@ -67,41 +65,41 @@ class AppointmentController extends Controller
             ['start' => '14:00', 'end' => '18:00'],
         ];
 
-        $availableSlots = [];
+        $slots = [];
         $duration = $service->duration_minutes + $service->slot_buffer_minutes;
 
         foreach ($workingHours as $session) {
             $start = Carbon::parse($session['start']);
             $end = Carbon::parse($session['end']);
 
-            while ($start->addMinutes($duration)->lte($end)) {
-                $slotTime = $start->format('H:i');
-                
-                if ($this->isSlotAvailable($service, $date, $slotTime)) {
-                    $availableSlots[] = [
-                        'time' => $slotTime,
-                        'display' => Carbon::parse($slotTime)->format('g:i A'),
-                        'is_peak' => $this->isPeakHour($slotTime),
+            while ($start->copy()->addMinutes($duration)->lte($end)) {
+                $time = $start->format('H:i');
+
+                if ($this->isSlotAvailable($service, $date, $time)) {
+                    $slots[] = [
+                        'time' => $time,
+                        'display' => Carbon::parse($time)->format('g:i A'),
+                        'is_peak' => $this->isPeakHour($time),
                     ];
                 }
+
+                $start->addMinutes($duration);
             }
         }
 
-        return $availableSlots;
+        return $slots;
     }
 
-    protected function isSlotAvailable(Service $service, Carbon $date, $time)
+    protected function isSlotAvailable(Service $service, Carbon $date, string $time): bool
     {
-        $existingAppointments = Appointment::where('service_id', $service->id)
+        return Appointment::where('service_id', $service->id)
             ->whereDate('appointment_date', $date)
             ->whereTime('appointment_time', $time)
             ->whereNotIn('status', ['cancelled'])
-            ->count();
-
-        return $existingAppointments === 0;
+            ->count() === 0;
     }
 
-    protected function isPeakHour($time)
+    protected function isPeakHour(string $time): bool
     {
         $hour = (int) explode(':', $time)[0];
         return ($hour >= 9 && $hour <= 11) || ($hour >= 15 && $hour <= 17);
@@ -112,22 +110,22 @@ class AppointmentController extends Controller
         DB::beginTransaction();
 
         try {
-            $service = Service::where('name', $request->service)->first();
-            
-            if (!$service) {
-                $service = Service::create([
-                    'name' => $request->service,
+            $service = Service::firstOrCreate(
+                ['name' => $request->service],
+                [
                     'code' => 'CUST-' . strtoupper(substr($request->service, 0, 3)) . '-' . time(),
                     'category' => 'custom',
                     'price' => 0,
                     'is_active' => false,
-                ]);
-            }
+                ]
+            );
 
-            if (!$this->isSlotAvailable($service, $request->appointment_date, $request->appointment_time)) {
+            $date = Carbon::parse($request->appointment_date);
+
+            if (!$this->isSlotAvailable($service, $date, $request->appointment_time)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'The selected time slot is no longer available. Please choose another time.'
+                    'message' => 'The selected time slot is no longer available.'
                 ], 409);
             }
 
@@ -135,7 +133,7 @@ class AppointmentController extends Controller
             $appointment->appointment_number = $appointment->generateAppointmentNumber();
             $appointment->service_id = $service->id;
             $appointment->service_name = $service->name;
-            $appointment->appointment_date = $request->appointment_date;
+            $appointment->appointment_date = $date;
             $appointment->appointment_time = $request->appointment_time;
             $appointment->patient_name = $request->name;
             $appointment->patient_phone = $request->phone;
@@ -145,19 +143,18 @@ class AppointmentController extends Controller
             $appointment->insurance_provider = $request->insurance;
             $appointment->contact_preferences = $request->contact_preferences;
             $appointment->duration_minutes = $service->duration_minutes;
-            $appointment->calculateEstimatedCost();
-            
+
             if (auth()->check() && auth()->user()->user_type === 'patient') {
                 $appointment->patient_id = auth()->id();
             }
 
+            $appointment->calculateEstimatedCost();
             $appointment->save();
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Appointment request submitted successfully',
                 'appointment' => [
                     'id' => $appointment->id,
                     'appointment_number' => $appointment->appointment_number,
@@ -168,74 +165,14 @@ class AppointmentController extends Controller
                     'estimated_cost' => $appointment->estimated_cost,
                 ]
             ]);
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('Appointment creation failed: ' . $e->getMessage());
+            Log::error('Appointment creation failed', ['error' => $e]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create appointment. Please try again or contact support.'
+                'message' => 'Failed to create appointment.'
             ], 500);
         }
-    }
-
-    public function show($id)
-    {
-        $appointment = Appointment::with(['service', 'radiologist'])
-            ->findOrFail($id);
-
-        if (auth()->check()) {
-            if (auth()->user()->user_type === 'patient' && $appointment->patient_id !== auth()->id()) {
-                abort(403);
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'appointment' => $appointment
-        ]);
-    }
-
-    public function cancel(Request $request, $id)
-    {
-        $request->validate([
-            'cancellation_reason' => 'required|string|max:500'
-        ]);
-
-        $appointment = Appointment::findOrFail($id);
-
-        if (auth()->check()) {
-            if (auth()->user()->user_type === 'patient' && $appointment->patient_id !== auth()->id()) {
-                abort(403);
-            }
-        }
-
-        $appointment->status = 'cancelled';
-        $appointment->cancellation_reason = $request->cancellation_reason;
-        $appointment->cancelled_at = now();
-        $appointment->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Appointment cancelled successfully'
-        ]);
-    }
-
-    public function patientAppointments()
-    {
-        if (!auth()->check() || auth()->user()->user_type !== 'patient') {
-            abort(403);
-        }
-
-        $appointments = Appointment::where('patient_id', auth()->id())
-            ->with('service')
-            ->orderBy('appointment_date', 'desc')
-            ->paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'appointments' => $appointments
-        ]);
     }
 }

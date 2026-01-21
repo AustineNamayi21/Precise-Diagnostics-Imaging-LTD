@@ -784,6 +784,10 @@
         
         // Add floating animation to hero
         startFloatingAnimation();
+        
+        // Debug: Log available routes
+        console.log('Appointment routes available:');
+        console.log('POST /appointments (with X-Requested-With: XMLHttpRequest header)');
     });
 
     // Animate hero section
@@ -1241,10 +1245,10 @@
         showStep(1);
     }
 
-    // ================ BACKEND INTEGRATION ================
+    // ================ BACKEND INTEGRATION (FIXED VERSION) ================
 
     /**
-     * Submit appointment to the backend - FIXED VERSION
+     * Submit appointment to the backend - FINAL FIXED VERSION
      */
     async function submitAppointmentBackend() {
         // Validate form
@@ -1273,8 +1277,8 @@
         const formData = new FormData(form);
         const appointmentData = {
             service: bookingState.service,
-            appointment_date: selectedDay.dataset.date, // Use the data-date attribute
-            appointment_time: selectedTimeSlot.dataset.time, // Use the data-time attribute directly
+            appointment_date: selectedDay.dataset.date,
+            appointment_time: selectedTimeSlot.dataset.time,
             name: formData.get('name'),
             phone: formData.get('phone'),
             email: formData.get('email'),
@@ -1296,16 +1300,36 @@
         submitBtn.disabled = true;
 
         try {
-            // FIXED: Changed from '/api/appointments/book' to '/appointments'
+            // FIXED: Use the web route with AJAX headers
             const response = await fetch('/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest' // CRITICAL: Tells Laravel this is an AJAX request
                 },
                 body: JSON.stringify(appointmentData)
             });
+
+            console.log('Response status:', response.status, response.statusText);
+
+            // Check if response is JSON before parsing
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Server returned non-JSON response:', text.substring(0, 200));
+                
+                if (response.status === 422) {
+                    // Validation error
+                    showError('Please check your form data and try again.');
+                } else if (response.status === 500) {
+                    showError('Server error. Please try again later or contact support.');
+                } else {
+                    showError('Unexpected response from server. Please try again.');
+                }
+                return;
+            }
 
             const data = await response.json();
             console.log('API Response:', data);
@@ -1314,8 +1338,17 @@
                 // Update success modal with real data from backend
                 document.getElementById('referenceDisplay').textContent = data.appointment.appointment_number;
                 
-                // Show the modal
-                document.getElementById('successModal').classList.remove('hidden');
+                // Show the modal with animation
+                const modal = document.getElementById('successModal');
+                modal.classList.remove('hidden');
+                modal.style.opacity = '0';
+                modal.style.transform = 'scale(0.9)';
+                
+                setTimeout(() => {
+                    modal.style.transition = 'all 0.3s ease-out';
+                    modal.style.opacity = '1';
+                    modal.style.transform = 'scale(1)';
+                }, 10);
                 
                 // Launch confetti
                 launchConfetti();
@@ -1326,11 +1359,16 @@
                 }, 3000);
                 
             } else {
-                showError(data.message || 'Failed to book appointment');
+                showError(data.message || 'Failed to book appointment. Please try again.');
             }
         } catch (error) {
             console.error('Appointment submission failed:', error);
-            showError('Network error. Please try again or contact support.');
+            
+            if (error.message.includes('Failed to fetch')) {
+                showError('Network error. Please check your internet connection and try again.');
+            } else {
+                showError('An unexpected error occurred. Please try again or contact support.');
+            }
         } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
@@ -1338,50 +1376,94 @@
     }
 
     /**
-     * Show error message
+     * Show error message with animation
      */
     function showError(message) {
         // Create error toast
         const toast = document.createElement('div');
-        toast.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg z-50';
-        toast.style.animation = 'slideInRight 0.3s ease-out';
+        toast.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg z-50 animate-slide-in-right';
         toast.innerHTML = `
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-3"></i>
-                <span>${message}</span>
+                <i class="fas fa-exclamation-circle mr-3 text-lg"></i>
+                <span class="font-medium">${message}</span>
+                <button class="ml-4 text-red-700 hover:text-red-900" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         `;
+        
+        // Remove existing toasts
+        document.querySelectorAll('.animate-slide-in-right').forEach(el => el.remove());
+        
         document.body.appendChild(toast);
         
+        // Auto-remove after 5 seconds
         setTimeout(() => {
-            toast.style.animation = 'slideOutRight 0.3s ease-out';
-            setTimeout(() => {
-                toast.remove();
-            }, 300);
+            if (toast.parentNode) {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease-out';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 300);
+            }
         }, 5000);
     }
 
-    // Add animation CSS for error toasts if not already present
-    if (!document.querySelector('#error-animations')) {
-        const errorStyle = document.createElement('style');
-        errorStyle.id = 'error-animations';
-        errorStyle.textContent = `
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
+    // Add CSS for slide-in animation if not present
+    if (!document.querySelector('#toast-animations')) {
+        const toastStyle = document.createElement('style');
+        toastStyle.id = 'toast-animations';
+        toastStyle.textContent = `
+            .animate-slide-in-right {
+                animation: slideInRight 0.3s ease-out forwards;
             }
-            @keyframes slideOutRight {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
+            
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
             }
         `;
-        document.head.appendChild(errorStyle);
+        document.head.appendChild(toastStyle);
     }
 
-    // Override the old submitAppointment function to use the new backend version
+    // Override the old submitAppointment function
     window.submitAppointment = function() {
-        console.warn('Using old submitAppointment. Please use submitAppointmentBackend instead.');
+        console.warn('submitAppointment() is deprecated. Using submitAppointmentBackend() instead.');
         submitAppointmentBackend();
     };
+    
+    /**
+     * Debug helper to check API connectivity
+     */
+    function checkApiConnectivity() {
+        console.log('Checking API connectivity...');
+        
+        // Test the web route
+        fetch('/appointments', {
+            method: 'HEAD',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => console.log('Web route (/appointments) status:', response.status))
+        .catch(error => console.error('Web route error:', error));
+        
+        // Test API routes if they exist
+        fetch('/api/appointments/book', { method: 'HEAD' })
+            .then(response => console.log('API route (/api/appointments/book) status:', response.status))
+            .catch(() => console.log('API route not available (this is normal if using web route)'));
+    }
+    
+    // Run connectivity check on load (optional)
+    // setTimeout(checkApiConnectivity, 1000);
 </script>
 @endsection
