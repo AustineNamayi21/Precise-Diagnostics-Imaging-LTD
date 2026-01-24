@@ -8,7 +8,6 @@ use App\Http\Controllers\ImagingServiceController;
 use App\Http\Controllers\RadiologyReportController;
 use App\Http\Controllers\ReportDeliveryController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,18 +37,23 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
+// ==================== AUTHENTICATION ROUTES ====================
+
+// Use Laravel's built-in authentication routes
+Auth::routes();
+
 // ==================== APPOINTMENT SYSTEM ====================
 
 // Appointment Booking Page
 Route::get('/appointments', [AppointmentController::class, 'book'])->name('appointments');
 
-// Handle Appointment Booking (with CSRF protection)
+// Handle Appointment Booking
 Route::post('/appointments', [AppointmentController::class, 'storeWeb'])
-    ->name('appointments.store')
-    ->middleware('web');
+    ->name('appointments.store');
 
 // Appointment Success Page
-Route::get('/appointments/success', [AppointmentController::class, 'success'])->name('appointments.success');
+Route::get('/appointments/success', [AppointmentController::class, 'success'])
+    ->name('appointments.success');
 
 // ==================== STATIC PAGES ====================
 
@@ -73,17 +77,6 @@ Route::get('/careers', function () {
     return view('careers');
 })->name('careers');
 
-// ==================== AUTHENTICATION ROUTES ====================
-
-// Login Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Registration Routes (initially public, can be restricted later)
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (Authentication Required)
@@ -94,7 +87,8 @@ Route::middleware(['auth'])->group(function () {
     
     // ==================== DASHBOARD & PROFILE ====================
     
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
     
     Route::get('/profile', function () {
         return view('profile');
@@ -108,31 +102,43 @@ Route::middleware(['auth'])->group(function () {
     
     // Patient Management
     Route::resource('patients', PatientController::class);
-    Route::get('patients/search/quick', [PatientController::class, 'search'])->name('patients.search.quick');
+    Route::get('patients/search/quick', [PatientController::class, 'search'])
+        ->name('patients.search.quick');
     
     // Patient Visits
     Route::resource('patient-visits', PatientVisitController::class);
-    Route::get('patients/{patient}/visits', [PatientVisitController::class, 'patientVisits'])->name('patient-visits.by-patient');
+    Route::get('patients/{patient}/visits', [PatientVisitController::class, 'patientVisits'])
+        ->name('patient-visits.by-patient');
     
     // Visit Services Management
-    Route::post('visits/{visit}/services', [PatientVisitController::class, 'addService'])->name('visits.add-service');
-    Route::delete('service-records/{record}', [PatientVisitController::class, 'removeService'])->name('visits.remove-service');
-    Route::patch('service-records/{record}/status', [PatientVisitController::class, 'updateServiceStatus'])->name('service-records.update-status');
+    Route::post('visits/{visit}/services', [PatientVisitController::class, 'addService'])
+        ->name('visits.add-service');
+    Route::delete('service-records/{record}', [PatientVisitController::class, 'removeService'])
+        ->name('visits.remove-service');
+    Route::patch('service-records/{record}/status', [PatientVisitController::class, 'updateServiceStatus'])
+        ->name('service-records.update-status');
     
     // Imaging Services
     Route::resource('imaging-services', ImagingServiceController::class)->except(['show']);
     
     // Radiology Reports
     Route::resource('radiology-reports', RadiologyReportController::class);
-    Route::post('reports/{report}/finalize', [RadiologyReportController::class, 'finalize'])->name('reports.finalize');
-    Route::get('reports/{report}/preview', [RadiologyReportController::class, 'preview'])->name('reports.preview');
-    Route::get('reports/{report}/download', [RadiologyReportController::class, 'downloadPDF'])->name('reports.download');
-    Route::get('reports/create/for-service/{serviceRecord}', [RadiologyReportController::class, 'create'])->name('reports.create.for-service');
+    Route::post('reports/{report}/finalize', [RadiologyReportController::class, 'finalize'])
+        ->name('reports.finalize');
+    Route::get('reports/{report}/preview', [RadiologyReportController::class, 'preview'])
+        ->name('reports.preview');
+    Route::get('reports/{report}/download', [RadiologyReportController::class, 'downloadPDF'])
+        ->name('reports.download');
+    Route::get('reports/create/for-service/{serviceRecord}', [RadiologyReportController::class, 'create'])
+        ->name('reports.create.for-service');
     
     // Report Delivery
-    Route::post('reports/{report}/send', [ReportDeliveryController::class, 'sendReport'])->name('reports.send');
-    Route::post('reports/bulk-send', [ReportDeliveryController::class, 'sendBulkReports'])->name('reports.bulk-send');
-    Route::get('report-delivery/history', [ReportDeliveryController::class, 'deliveryHistory'])->name('report-delivery.history');
+    Route::post('reports/{report}/send', [ReportDeliveryController::class, 'sendReport'])
+        ->name('reports.send');
+    Route::post('reports/bulk-send', [ReportDeliveryController::class, 'sendBulkReports'])
+        ->name('reports.bulk-send');
+    Route::get('report-delivery/history', [ReportDeliveryController::class, 'deliveryHistory'])
+        ->name('report-delivery.history');
 });
 
 /*
@@ -144,7 +150,7 @@ Route::middleware(['auth'])->group(function () {
 // Test route for development
 Route::get('/test', function () {
     return view('test');
-});
+})->name('test');
 
 // Route to check if patient management system is accessible (for testing)
 Route::get('/test-patient-system', function () {

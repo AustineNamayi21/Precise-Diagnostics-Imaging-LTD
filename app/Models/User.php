@@ -11,28 +11,42 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     * ONLY columns that actually exist in the database
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
-        'phone',
-        'specialization',
-        'license_number',
-        'is_active'
+        // REMOVED: 'role', 'phone', 'specialization', 'license_number', 'is_active'
+        // Add these back later when columns exist
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'is_active' => 'boolean',
-    ];
+    /**
+     * Get the attributes that should be cast.
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            // REMOVED: 'is_active' => 'boolean'
+        ];
+    }
 
+    /**
+     * REMOVE THESE METHODS for now since 'role' column doesn't exist
+     */
+    /*
     public function isRadiographer()
     {
         return $this->role === 'radiographer';
@@ -47,7 +61,12 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+    */
 
+    /**
+     * REMOVE THESE RELATIONSHIPS for now if they depend on role-based IDs
+     */
+    /*
     public function assignedReports()
     {
         return $this->hasMany(RadiologyReport::class, 'radiologist_id');
@@ -57,4 +76,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(PatientVisit::class, 'radiographer_id');
     }
+    */
 }

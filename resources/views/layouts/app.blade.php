@@ -133,6 +133,41 @@
             max-width: 300px;
         }
         
+        /* Auth page styles */
+        .auth-body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-logo h2 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .auth-logo .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
         @media (max-width: 768px) {
             .admin-sidebar {
                 width: 100%;
@@ -142,6 +177,10 @@
             
             .admin-content {
                 margin-left: 0;
+            }
+            
+            .auth-card {
+                padding: 20px;
             }
         }
         
@@ -164,188 +203,233 @@
     @stack('styles')
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="admin-sidebar d-none d-md-block">
-                <div class="logo">
-                    <h4 class="mb-0 font-heading"><i class="fas fa-clinic-medical"></i> Precise Diagnostics</h4>
-                    <small class="text-gray-400">Patient Management System</small>
-                </div>
-                
-                <ul class="nav flex-column mt-3">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('patients.*') ? 'active' : '' }}" href="{{ route('patients.index') }}">
-                            <i class="fas fa-users me-2"></i> Patients
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('patient-visits.*') ? 'active' : '' }}" href="{{ route('patient-visits.index') }}">
-                            <i class="fas fa-calendar-check me-2"></i> Patient Visits
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('imaging-services.*') ? 'active' : '' }}" href="{{ route('imaging-services.index') }}">
-                            <i class="fas fa-x-ray me-2"></i> Imaging Services
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('radiology-reports.*') ? 'active' : '' }}" href="{{ route('radiology-reports.index') }}">
-                            <i class="fas fa-file-medical me-2"></i> Radiology Reports
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('report-delivery.*') ? 'active' : '' }}" href="{{ route('report-delivery.history') }}">
-                            <i class="fas fa-paper-plane me-2"></i> Report Delivery
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item mt-4">
-                        <a class="nav-link" href="{{ route('home') }}" target="_blank">
-                            <i class="fas fa-globe me-2"></i> Visit Website
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <a class="nav-link" href="#" onclick="event.preventDefault(); this.closest('form').submit();">
-                                <i class="fas fa-sign-out-alt me-2"></i> Logout
-                            </a>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-            
-            <!-- Main Content -->
-            <main class="admin-content">
-                <!-- Top Navigation -->
-                <nav class="admin-navbar mb-4">
-                    <div class="container-fluid">
-                        <button class="btn btn-outline-primary d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        
-                        <div class="d-flex align-items-center">
-                            <span class="me-3 d-none d-md-block">
-                                <i class="fas fa-user-md me-1"></i> Welcome, {{ auth()->user()->name ?? 'User' }}
-                            </span>
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-cog"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <a class="dropdown-item" href="#" onclick="event.preventDefault(); this.closest('form').submit();">
-                                                <i class="fas fa-sign-out-alt me-2"></i> Logout
-                                            </a>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+    @auth
+        <!-- AUTHENTICATED USER: Show full dashboard layout -->
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <nav class="admin-sidebar d-none d-md-block">
+                    <div class="logo">
+                        <h4 class="mb-0 font-heading"><i class="fas fa-clinic-medical"></i> Precise Diagnostics</h4>
+                        <small class="text-gray-400">Patient Management System</small>
                     </div>
+                    
+                    <ul class="nav flex-column mt-3">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('patients.*') ? 'active' : '' }}" href="{{ route('patients.index') }}">
+                                <i class="fas fa-users me-2"></i> Patients
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('patient-visits.*') ? 'active' : '' }}" href="{{ route('patient-visits.index') }}">
+                                <i class="fas fa-calendar-check me-2"></i> Patient Visits
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('imaging-services.*') ? 'active' : '' }}" href="{{ route('imaging-services.index') }}">
+                                <i class="fas fa-x-ray me-2"></i> Imaging Services
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('radiology-reports.*') ? 'active' : '' }}" href="{{ route('radiology-reports.index') }}">
+                                <i class="fas fa-file-medical me-2"></i> Radiology Reports
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('report-delivery.*') ? 'active' : '' }}" href="{{ route('report-delivery.history') }}">
+                                <i class="fas fa-paper-plane me-2"></i> Report Delivery
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item mt-4">
+                            <a class="nav-link" href="{{ route('home') }}" target="_blank">
+                                <i class="fas fa-globe me-2"></i> Visit Website
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <a class="nav-link" href="#" onclick="event.preventDefault(); this.closest('form').submit();">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                </a>
+                            </form>
+                        </li>
+                    </ul>
                 </nav>
                 
-                <!-- Mobile Sidebar (Offcanvas) -->
-                <div class="offcanvas offcanvas-start d-md-none" tabindex="-1" id="mobileSidebar">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title font-heading">Precise Diagnostics</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('patients.*') ? 'active' : '' }}" href="{{ route('patients.index') }}">
-                                    <i class="fas fa-users me-2"></i> Patients
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('patient-visits.*') ? 'active' : '' }}" href="{{ route('patient-visits.index') }}">
-                                    <i class="fas fa-calendar-check me-2"></i> Patient Visits
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('imaging-services.*') ? 'active' : '' }}" href="{{ route('imaging-services.index') }}">
-                                    <i class="fas fa-x-ray me-2"></i> Imaging Services
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('radiology-reports.*') ? 'active' : '' }}" href="{{ route('radiology-reports.index') }}">
-                                    <i class="fas fa-file-medical me-2"></i> Radiology Reports
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('report-delivery.*') ? 'active' : '' }}" href="{{ route('report-delivery.history') }}">
-                                    <i class="fas fa-paper-plane me-2"></i> Report Delivery
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- Flash Messages -->
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                @if(session('warning'))
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-triangle me-2"></i> {{ session('warning') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                
-                <!-- Page Title and Actions -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="mb-0 font-heading">@yield('page-title', 'Dashboard')</h2>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                                @yield('breadcrumbs')
-                            </ol>
-                        </nav>
-                    </div>
-                    <div>
-                        @yield('header-actions')
-                    </div>
-                </div>
-                
                 <!-- Main Content -->
-                @yield('content')
-            </main>
+                <main class="admin-content">
+                    <!-- Top Navigation -->
+                    <nav class="admin-navbar mb-4">
+                        <div class="container-fluid">
+                            <button class="btn btn-outline-primary d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            
+                            <div class="d-flex align-items-center">
+                                <span class="me-3 d-none d-md-block">
+                                    <i class="fas fa-user-md me-1"></i> Welcome, {{ auth()->user()->name }}
+                                </span>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); this.closest('form').submit();">
+                                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                                </a>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <!-- Mobile Sidebar (Offcanvas) -->
+                    <div class="offcanvas offcanvas-start d-md-none" tabindex="-1" id="mobileSidebar">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title font-heading">Precise Diagnostics</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                                        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('patients.*') ? 'active' : '' }}" href="{{ route('patients.index') }}">
+                                        <i class="fas fa-users me-2"></i> Patients
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('patient-visits.*') ? 'active' : '' }}" href="{{ route('patient-visits.index') }}">
+                                        <i class="fas fa-calendar-check me-2"></i> Patient Visits
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('imaging-services.*') ? 'active' : '' }}" href="{{ route('imaging-services.index') }}">
+                                        <i class="fas fa-x-ray me-2"></i> Imaging Services
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('radiology-reports.*') ? 'active' : '' }}" href="{{ route('radiology-reports.index') }}">
+                                        <i class="fas fa-file-medical me-2"></i> Radiology Reports
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('report-delivery.*') ? 'active' : '' }}" href="{{ route('report-delivery.history') }}">
+                                        <i class="fas fa-paper-plane me-2"></i> Report Delivery
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Flash Messages -->
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    
+                    @if(session('warning'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i> {{ session('warning') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
+                    
+                    <!-- Page Title and Actions -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="mb-0 font-heading">@yield('page-title', 'Dashboard')</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                                    @yield('breadcrumbs')
+                                </ol>
+                            </nav>
+                        </div>
+                        <div>
+                            @yield('header-actions')
+                        </div>
+                    </div>
+                    
+                    <!-- Main Content -->
+                    @yield('content')
+                </main>
+            </div>
         </div>
-    </div>
+    @else
+        <!-- UNAUTHENTICATED USER: Show minimal auth layout -->
+        <div class="auth-body">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <h2><i class="fas fa-clinic-medical"></i> Precise Diagnostics</h2>
+                    <div class="subtitle">Patient Management System</div>
+                </div>
+                
+                <!-- Flash Messages for auth pages -->
+                @if(session('status'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> {{ session('status') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+                
+                @if($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> 
+                        @foreach($errors->all() as $error)
+                            {{ $error }}<br>
+                        @endforeach
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+                
+                <!-- Auth Content -->
+                @yield('content')
+                
+                <!-- Auth Footer -->
+                <div class="text-center mt-3">
+                    @if(request()->is('login'))
+                        <small>Don't have an account? <a href="{{ route('register') }}">Register here</a></small>
+                    @elseif(request()->is('register'))
+                        <small>Already have an account? <a href="{{ route('login') }}">Login here</a></small>
+                    @elseif(request()->is('password/*'))
+                        <small><a href="{{ route('login') }}">Back to login</a></small>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endauth
     
     <!-- Required Scripts -->
     <!-- Bootstrap 5 JS Bundle with Popper -->
@@ -358,22 +442,24 @@
     
     <script>
         $(document).ready(function() {
-            // Initialize DataTables
-            $('.data-table').DataTable({
-                pageLength: 25,
-                responsive: true,
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Search..."
-                }
-            });
+            // Initialize DataTables (only when authenticated and tables exist)
+            if ($('.data-table').length) {
+                $('.data-table').DataTable({
+                    pageLength: 25,
+                    responsive: true,
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search..."
+                    }
+                });
+            }
             
             // Auto-dismiss alerts after 5 seconds
             setTimeout(function() {
                 $('.alert').alert('close');
             }, 5000);
             
-            // Confirm before deleting
+            // Confirm before deleting (only when authenticated)
             window.confirmDelete = function(event, message = 'Are you sure you want to delete this item?') {
                 if (!confirm(message)) {
                     event.preventDefault();

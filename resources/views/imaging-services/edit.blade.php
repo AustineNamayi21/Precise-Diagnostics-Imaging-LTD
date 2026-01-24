@@ -1,5 +1,4 @@
-@extends('layouts.admin')
-
+@extends('layouts.app')
 @section('title', 'Edit Imaging Service - ' . $imagingService->name)
 
 @section('page-title', 'Edit Imaging Service')
