@@ -24,7 +24,7 @@
                     <p class="mb-0">This report has been finalized and cannot be edited. To make changes, you may need to create an amended report.</p>
                 </div>
                 @else
-                <form action="{{ route('radiology-reports.update', $radiologyReport) }}" method="POST">
+                <form action="{{ route('radiology-reports.update', $radiologyReport) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -82,6 +82,16 @@
                         @error('recommendations')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Replace / Attach Report File (PDF/DOC/DOCX) (Optional)</label>
+                        <input type="file" class="form-control" name="attachment" accept=".pdf,.doc,.docx">
+                        @if($radiologyReport->attachment_path)
+                            <small class="text-muted d-block mt-2">
+                                Current attachment: <strong>{{ $radiologyReport->attachment_name ?? 'report-file' }}</strong>
+                            </small>
+                        @endif
                     </div>
                     
                     <div class="row">

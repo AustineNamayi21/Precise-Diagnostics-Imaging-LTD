@@ -20,6 +20,12 @@
     <a href="{{ route('reports.download', $radiologyReport) }}" class="btn btn-success me-2">
         <i class="fas fa-download me-1"></i> Download PDF
     </a>
+    @if($radiologyReport->attachment_path)
+    <a href="{{ route('reports.attachment.download', $radiologyReport) }}" class="btn btn-outline-success me-2">
+        <i class="fas fa-paperclip me-1"></i> Download Attachment
+    </a>
+    @endif
+
     
     @if($radiologyReport->status == 'finalized' && !$radiologyReport->sent_to_patient)
     <form action="{{ route('reports.send', $radiologyReport) }}" method="POST" class="d-inline">
@@ -31,7 +37,7 @@
     @endif
     
     @if($radiologyReport->isEditable())
-    <form action="{{ route('radiology-reports.finalize', $radiologyReport) }}" method="POST" class="d-inline">
+    <form action="{{ route('reports.finalize', $radiologyReport) }}" method="POST" class="d-inline">
         @csrf
         <button type="submit" class="btn btn-success me-2" onclick="return confirm('Finalize this report? This action cannot be undone.')">
             <i class="fas fa-check-circle me-1"></i> Finalize

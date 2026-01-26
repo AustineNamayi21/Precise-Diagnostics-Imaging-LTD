@@ -1,189 +1,114 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreRadiologyReportRequest;
+use App\Http\Requests\Admin\UpdateRadiologyReportRequest;
+use App\Models\ImagingService;
 use App\Models\RadiologyReport;
-use App\Models\ServiceRecord;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class RadiologyReportController extends Controller
 {
+    public function __construct(private readonly ReportService $reportService)
+    {
+    }
+
     public function index(Request $request)
     {
-        $query = RadiologyReport::with(['serviceRecord.visit.patient', 'radiologist']);
+        $query = RadiologyReport::query()
+            ->with(['imagingService.service', 'imagingService.visit.patient'])
+            ->latest();
 
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
         }
 
-        if ($request->has('radiologist_id')) {
-            $query->where('radiologist_id', $request->radiologist_id);
-        }
-
-        if ($request->has('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->has('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        $reports = $query->latest()->paginate(20);
-
-        return view('radiology-reports.index', compact('reports'));
+        $reports = $query->paginate(20)->withQueryString();
+        return view('admin.reports.index', compact('reports'));
     }
 
-    public function create(Request $request)
+    public function createForImagingService(ImagingService $imagingService)
     {
-        $serviceRecordId = $request->query('service_record_id');
-        
-        if ($serviceRecordId) {
-            $serviceRecord = ServiceRecord::with(['visit.patient', 'service'])->findOrFail($serviceRecordId);
-            $serviceRecords = collect([$serviceRecord]);
-        } else {
-            $serviceRecords = ServiceRecord::pendingReporting()->with(['visit.patient', 'service'])->get();
+        $imagingService->load(['visit.patient', 'service', 'report']);
+
+        if ($imagingService->report) {
+            return redirect()
+                ->route('admin.reports.edit', $imagingService->report)
+                ->with('info', 'A report already exists for this imaging service.');
         }
 
-        return view('radiology-reports.create', compact('serviceRecords'));
+        return view('admin.reports.create-for-imaging-service', compact('imagingService'));
     }
 
-    public function store(Request $request)
+    public function storeForImagingService(StoreRadiologyReportRequest $request, ImagingService $imagingService)
     {
-        $validator = Validator::make($request->all(), [
-            'service_record_id' => 'required|exists:service_records,id',
-            'clinical_history' => 'nullable|string',
-            'technique' => 'nullable|string',
-            'findings' => 'required|string',
-            'impression' => 'required|string',
-            'recommendations' => 'nullable|string',
-            'priority' => 'required|in:routine,urgent,stat',
-        ]);
+        $report = $this->reportService->createReportForImagingService(
+            imagingService: $imagingService,
+            reportText: $request->validated()['report_text'] ?? null,
+            attachment: $request->file('attachment'),
+            createdBy: auth()->id()
+        );
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $report = RadiologyReport::create([
-            'service_record_id' => $request->service_record_id,
-            'radiologist_id' => auth()->id(),
-            'clinical_history' => $request->clinical_history,
-            'technique' => $request->technique,
-            'findings' => $request->findings,
-            'impression' => $request->impression,
-            'recommendations' => $request->recommendations,
-            'priority' => $request->priority,
-            'status' => 'draft',
-        ]);
-
-        $serviceRecord = ServiceRecord::find($request->service_record_id);
-        $serviceRecord->update(['status' => 'completed']);
-
-        return redirect()->route('radiology-reports.edit', $report)
-            ->with('success', 'Report created successfully. You can now finalize it.');
+        return redirect()
+            ->route('admin.reports.edit', $report)
+            ->with('success', 'Report created successfully.');
     }
 
-    public function show(RadiologyReport $radiologyReport)
+    public function show(RadiologyReport $report)
     {
-        $radiologyReport->load([
-            'serviceRecord.service',
-            'serviceRecord.visit.patient',
-            'radiologist'
-        ]);
-
-        return view('radiology-reports.show', compact('radiologyReport'));
+        $report->load(['imagingService.service', 'imagingService.visit.patient', 'deliveries.sender']);
+        return view('admin.reports.show', compact('report'));
     }
 
-    public function edit(RadiologyReport $radiologyReport)
+    public function edit(RadiologyReport $report)
     {
-        if (!$radiologyReport->isEditable()) {
-            return redirect()->route('radiology-reports.show', $radiologyReport)
-                ->with('error', 'This report cannot be edited as it is already finalized.');
-        }
-
-        $radiologyReport->load(['serviceRecord.service', 'serviceRecord.visit.patient']);
-
-        return view('radiology-reports.edit', compact('radiologyReport'));
+        $report->load(['imagingService.service', 'imagingService.visit.patient', 'deliveries.sender']);
+        return view('admin.reports.edit', compact('report'));
     }
 
-    public function update(Request $request, RadiologyReport $radiologyReport)
+    public function update(UpdateRadiologyReportRequest $request, RadiologyReport $report)
     {
-        if (!$radiologyReport->isEditable()) {
-            return redirect()->back()
-                ->with('error', 'This report cannot be edited as it is already finalized.');
-        }
+        $this->reportService->updateReport(
+            report: $report,
+            reportText: $request->validated()['report_text'] ?? null,
+            attachment: $request->file('attachment'),
+            removeAttachment: (bool)($request->validated()['remove_attachment'] ?? false)
+        );
 
-        $validator = Validator::make($request->all(), [
-            'clinical_history' => 'nullable|string',
-            'technique' => 'nullable|string',
-            'findings' => 'required|string',
-            'impression' => 'required|string',
-            'recommendations' => 'nullable|string',
-            'priority' => 'required|in:routine,urgent,stat',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $radiologyReport->update($request->all());
-
-        return redirect()->route('radiology-reports.show', $radiologyReport)
+        return redirect()
+            ->route('admin.reports.edit', $report)
             ->with('success', 'Report updated successfully.');
     }
 
-    public function destroy(RadiologyReport $radiologyReport)
+    public function destroy(RadiologyReport $report)
     {
-        if (!$radiologyReport->isEditable()) {
-            return redirect()->back()
-                ->with('error', 'Only draft reports can be deleted.');
-        }
+        $this->reportService->deleteReport($report);
 
-        $radiologyReport->delete();
-
-        return redirect()->route('radiology-reports.index')
+        return redirect()
+            ->route('admin.reports.index')
             ->with('success', 'Report deleted successfully.');
     }
 
     public function finalize(RadiologyReport $radiologyReport)
     {
-        if ($radiologyReport->status !== 'draft') {
-            return redirect()->back()
-                ->with('error', 'Only draft reports can be finalized.');
-        }
+        $this->reportService->finalizeReport($radiologyReport, auth()->id());
 
-        $radiologyReport->finalize();
-
-        return redirect()->route('radiology-reports.show', $radiologyReport)
-            ->with('success', 'Report finalized successfully. It can now be sent to the patient.');
+        return redirect()
+            ->route('admin.reports.show', $radiologyReport)
+            ->with('success', 'Report finalized successfully.');
     }
 
     public function preview(RadiologyReport $radiologyReport)
     {
-        $radiologyReport->load([
-            'serviceRecord.service',
-            'serviceRecord.visit.patient',
-            'radiologist'
-        ]);
-
-        return view('radiology-reports.preview', compact('radiologyReport'));
+        $radiologyReport->load(['imagingService.service', 'imagingService.visit.patient']);
+        return view('admin.reports.preview', ['report' => $radiologyReport]);
     }
 
-    public function downloadPDF(RadiologyReport $radiologyReport)
+    public function download(RadiologyReport $radiologyReport)
     {
-        $radiologyReport->load([
-            'serviceRecord.service',
-            'serviceRecord.visit.patient',
-            'radiologist'
-        ]);
-
-        $pdf = Pdf::loadView('radiology-reports.pdf', compact('radiologyReport'));
-
-        return $pdf->download('report-' . $radiologyReport->report_number . '.pdf');
+        return $this->reportService->downloadAttachment($radiologyReport);
     }
 }

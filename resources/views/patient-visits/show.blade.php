@@ -14,7 +14,7 @@
     <a href="{{ route('patient-visits.edit', $patientVisit) }}" class="btn btn-warning me-2">
         <i class="fas fa-edit me-1"></i> Edit
     </a>
-    <a href="{{ route('reports.create.for-service', $patientVisit->serviceRecords->first() ?? 0) }}" class="btn btn-primary me-2">
+    <a href="{{ route('reports.create.for-service', $patientVisit->serviceRecords->first() ? $patientVisit->serviceRecords->first()->id : 0) }}" class="btn btn-primary me-2">
         <i class="fas fa-file-medical me-1"></i> Create Report
     </a>
     <form action="{{ route('patient-visits.destroy', $patientVisit) }}" method="POST" onsubmit="return confirmDelete(event, 'Are you sure you want to delete this visit?')">
@@ -136,9 +136,9 @@
                     </form>
                     @endif
                     
-                    <a href="{{ route('visits.add-service', $patientVisit) }}" class="btn btn-primary w-100 mb-2">
+                    <button type="button" class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#addServiceModal">
                         <i class="fas fa-plus-circle me-2"></i> Add Service
-                    </a>
+                    </button>
                     
                     <a href="#" class="btn btn-info w-100 mb-2">
                         <i class="fas fa-print me-2"></i> Print Invoice

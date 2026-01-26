@@ -7,19 +7,31 @@ use App\Services\PhpMailerService;
 
 class MailServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton('phpmailer', function ($app) {
+        /**
+         * Bind the class directly (best practice).
+         * This allows constructor injection:
+         *   public function __construct(private PhpMailerService $mailer) {}
+         */
+        $this->app->singleton(PhpMailerService::class, function () {
             return new PhpMailerService();
         });
-        
-        // Bind PhpMailerService to Laravel's Mail facade
-        $this->app->bind('mailer', function ($app) {
-            return $app->make(PhpMailerService::class);
-        });
+
+        /**
+         * Optional: also bind a short alias for manual resolving:
+         *   app('phpmailer')
+         */
+        $this->app->alias(PhpMailerService::class, 'phpmailer');
+
+        /**
+         * IMPORTANT:
+         * Do NOT bind 'mailer' here — Laravel uses that internally.
+         * Binding 'mailer' can break framework mail features and some packages.
+         */
     }
 
-    public function boot()
+    public function boot(): void
     {
         //
     }

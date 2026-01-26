@@ -2,90 +2,48 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Patient extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
 
     protected $fillable = [
-        'patient_id',
+        'patient_number',
         'first_name',
         'last_name',
-        'email',
         'phone',
-        'date_of_birth',
+        'email',
+        'dob',
         'gender',
         'address',
-        'city',
-        'state',
-        'postal_code',
-        'emergency_contact',
-        'medical_history',
-        'allergies',
-        'is_active'
+        'created_by',
     ];
 
     protected $casts = [
-        'date_of_birth' => 'date',
-        'is_active' => 'boolean',
+        'dob' => 'date',
     ];
 
-    protected static function boot()
+    public function visits(): HasMany
     {
-        parent::boot();
-
-        static::creating(function ($patient) {
-            if (empty($patient->patient_id)) {
-                $patient->patient_id = 'RAD-' . str_pad(Patient::withTrashed()->count() + 1, 4, '0', STR_PAD_LEFT);
-            }
-        });
+        return $this->hasMany(Visit::class);
     }
 
-    // Relationships
-    public function visits()
+    public function invoices(): HasMany
     {
-        return $this->hasMany(PatientVisit::class);
+        return $this->hasMany(Invoice::class);
     }
 
-    public function recentVisits()
+    public function creator(): BelongsTo
     {
-        return $this->hasMany(PatientVisit::class)->latest()->take(5);
+        return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Accessors
-    public function getFullNameAttribute()
+    public function getFullNameAttribute(): string
     {
-        return "{$this->first_name} {$this->last_name}";
-    }
-
-    public function getAgeAttribute()
-    {
-        return $this->date_of_birth->age;
-    }
-
-    public function getFormattedAddressAttribute()
-    {
-        $parts = array_filter([$this->address, $this->city, $this->state, $this->postal_code]);
-        return implode(', ', $parts);
-    }
-
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeSearch($query, $search)
-    {
-        return $query->where(function ($q) use ($search) {
-            $q->where('first_name', 'like', "%{$search}%")
-              ->orWhere('last_name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%")
-              ->orWhere('phone', 'like', "%{$search}%")
-              ->orWhere('patient_id', 'like', "%{$search}%");
-        });
+        return trim($this->first_name . ' ' . $this->last_name);
     }
 }

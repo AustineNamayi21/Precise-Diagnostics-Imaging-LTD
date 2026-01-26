@@ -2,47 +2,61 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ImagingService extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'service_code',
-        'name',
-        'description',
-        'modality',
-        'body_part',
-        'price',
-        'duration_minutes',
-        'preparation_instructions',
-        'is_active'
+        'visit_id',
+        'service_id',
+        'ordered_at',
+        'performed_at',
+        'radiographer_id',
+        'notes',
+        'status',
+        'price_override',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'is_active' => 'boolean',
+        'ordered_at' => 'datetime',
+        'performed_at' => 'datetime',
+        'price_override' => 'decimal:2',
     ];
 
-    public function serviceRecords()
+    public function visit(): BelongsTo
     {
-        return $this->hasMany(ServiceRecord::class);
+        return $this->belongsTo(Visit::class);
     }
 
-    public function scopeActive($query)
+    public function service(): BelongsTo
     {
-        return $query->where('is_active', true);
+        return $this->belongsTo(Service::class);
     }
 
-    public function scopeByModality($query, $modality)
+    public function radiographer(): BelongsTo
     {
-        return $query->where('modality', $modality);
+        return $this->belongsTo(User::class, 'radiographer_id');
     }
 
-    public function getFormattedPriceAttribute()
+    public function report(): HasOne
     {
-        return '₹' . number_format($this->price, 2);
+        return $this->hasOne(RadiologyReport::class);
+    }
+
+    /**
+     * Convenience: returns the effective price (override or catalog price)
+     */
+    public function getEffectivePriceAttribute(): float
+    {
+        if (!is_null($this->price_override)) {
+            return (float) $this->price_override;
+        }
+
+        return (float) ($this->service?->price ?? 0);
     }
 }

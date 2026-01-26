@@ -2,104 +2,52 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RadiologyReport extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'service_record_id',
-        'radiologist_id',
-        'report_number',
-        'clinical_history',
-        'technique',
-        'findings',
-        'impression',
-        'recommendations',
-        'priority',
+        'imaging_service_id',
+        'report_text',
+        'attachment_path',
+        'attachment_name',
+        'attachment_mime',
+        'attachment_size',
         'status',
+        'created_by',
+        'finalized_by',
         'finalized_at',
-        'amendment_notes',
-        'sent_to_patient',
-        'sent_at'
     ];
 
     protected $casts = [
         'finalized_at' => 'datetime',
-        'sent_at' => 'datetime',
-        'sent_to_patient' => 'boolean',
+        'attachment_size' => 'integer',
     ];
 
-    protected static function boot()
+    public function imagingService(): BelongsTo
     {
-        parent::boot();
-
-        static::creating(function ($report) {
-            if (empty($report->report_number)) {
-                $count = RadiologyReport::whereYear('created_at', now()->year)
-                                         ->whereMonth('created_at', now()->month)
-                                         ->count();
-                $report->report_number = 'REP-' . now()->format('Y-m') . '-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
-            }
-        });
+        return $this->belongsTo(ImagingService::class);
     }
 
-    public function serviceRecord()
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo(ServiceRecord::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function radiologist()
+    public function finalizer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'finalized_by');
     }
 
-    public function getPatientAttribute()
+    public function deliveries(): HasMany
     {
-        return $this->serviceRecord->visit->patient ?? null;
+        return $this->hasMany(ReportDelivery::class);
     }
 
-    public function scopeFinalized($query)
+    public function isFinal(): bool
     {
-        return $query->where('status', 'finalized');
-    }
-
-    public function scopeDraft($query)
-    {
-        return $query->where('status', 'draft');
-    }
-
-    public function scopePendingDelivery($query)
-    {
-        return $query->where('status', 'finalized')
-                     ->where('sent_to_patient', false);
-    }
-
-    public function scopeByRadiologist($query, $radiologistId)
-    {
-        return $query->where('radiologist_id', $radiologistId);
-    }
-
-    public function finalize()
-    {
-        $this->update([
-            'status' => 'finalized',
-            'finalized_at' => now(),
-        ]);
-    }
-
-    public function markAsSent()
-    {
-        $this->update([
-            'sent_to_patient' => true,
-            'sent_at' => now(),
-        ]);
-    }
-
-    public function isEditable()
-    {
-        return $this->status === 'draft';
+        return $this->status === 'final';
     }
 }

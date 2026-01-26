@@ -18,7 +18,7 @@
             </div>
             <div class="admin-card-body">
                 @if($serviceRecords->count() > 0)
-                <form action="{{ route('radiology-reports.store') }}" method="POST">
+                <form action="{{ route('radiology-reports.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <!-- Service Selection -->
@@ -103,6 +103,12 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Attach Report File (PDF/DOC/DOCX) (Optional)</label>
+                        <input type="file" class="form-control" name="attachment" accept=".pdf,.doc,.docx">
+                        <small class="text-muted">If you attach a file, it will be emailed to the patient as-is. Otherwise, the system will generate a PDF from the typed report.</small>
+                    </div>
                     </div>
                     
                     <div class="alert alert-info">

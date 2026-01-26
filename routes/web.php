@@ -1,13 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\AppointmentController;
-use App\Http\Controllers\PatientController;
-use App\Http\Controllers\PatientVisitController;
-use App\Http\Controllers\ImagingServiceController;
-use App\Http\Controllers\RadiologyReportController;
-use App\Http\Controllers\ReportDeliveryController;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\Web\AppointmentController as PublicAppointmentController;
 use App\Http\Controllers\DashboardController;
+
+// Admin controllers (you will create these in the next step)
+use App\Http\Controllers\Admin\PatientController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\VisitController;
+use App\Http\Controllers\Admin\ImagingServiceController;
+use App\Http\Controllers\Admin\RadiologyReportController;
+use App\Http\Controllers\Admin\ReportDeliveryController;
+use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
+use App\Http\Controllers\Admin\FinanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,147 +22,170 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 
-// ==================== PUBLIC WEBSITE PAGES ====================
+// Public website pages
+Route::view('/', 'home')->name('home');
+Route::view('/about', 'about')->name('about');
+Route::view('/services', 'services')->name('services');
+Route::view('/contact', 'contact')->name('contact');
 
-// Homepage
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-
-// About Page
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
-
-// Services Page
-Route::get('/services', function () {
-    return view('services');
-})->name('services');
-
-// Contact Page
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
-
-// ==================== AUTHENTICATION ROUTES ====================
-
-// Use Laravel's built-in authentication routes
+// Auth routes
 Auth::routes();
 
-// ==================== APPOINTMENT SYSTEM ====================
+// Public appointment booking
+Route::get('/appointments', [PublicAppointmentController::class, 'book'])->name('appointments');
+Route::post('/appointments', [PublicAppointmentController::class, 'storeWeb'])->name('appointments.store');
+Route::get('/appointments/success', [PublicAppointmentController::class, 'success'])->name('appointments.success');
 
-// Appointment Booking Page
-Route::get('/appointments', [AppointmentController::class, 'book'])->name('appointments');
+// Static pages
+Route::view('/privacy-policy', 'privacy')->name('privacy');
+Route::view('/terms-of-service', 'terms')->name('terms');
+Route::view('/sitemap', 'sitemap')->name('sitemap');
+Route::view('/careers', 'careers')->name('careers');
 
-// Handle Appointment Booking
-Route::post('/appointments', [AppointmentController::class, 'storeWeb'])
-    ->name('appointments.store');
-
-// Appointment Success Page
-Route::get('/appointments/success', [AppointmentController::class, 'success'])
-    ->name('appointments.success');
-
-// ==================== STATIC PAGES ====================
-
-// Privacy Policy Page
-Route::get('/privacy-policy', function () {
-    return view('privacy');
-})->name('privacy');
-
-// Terms of Service Page
-Route::get('/terms-of-service', function () {
-    return view('terms');
-})->name('terms');
-
-// Sitemap Page
-Route::get('/sitemap', function () {
-    return view('sitemap');
-})->name('sitemap');
-
-// Careers Page
-Route::get('/careers', function () {
-    return view('careers');
-})->name('careers');
 
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (Authentication Required)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth'])->group(function () {
-    
-    // ==================== DASHBOARD & PROFILE ====================
-    
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-    
-    Route::get('/profile', function () {
-        return view('profile');
-    })->name('profile');
-    
-    // My Appointments (for logged-in users)
-    Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])
-        ->name('appointments.my');
-    
-    // ==================== PATIENT MANAGEMENT SYSTEM ====================
-    
-    // Patient Management
-    Route::resource('patients', PatientController::class);
-    Route::get('patients/search/quick', [PatientController::class, 'search'])
-        ->name('patients.search.quick');
-    
-    // Patient Visits
-    Route::resource('patient-visits', PatientVisitController::class);
-    Route::get('patients/{patient}/visits', [PatientVisitController::class, 'patientVisits'])
-        ->name('patient-visits.by-patient');
-    
-    // Visit Services Management
-    Route::post('visits/{visit}/services', [PatientVisitController::class, 'addService'])
-        ->name('visits.add-service');
-    Route::delete('service-records/{record}', [PatientVisitController::class, 'removeService'])
-        ->name('visits.remove-service');
-    Route::patch('service-records/{record}/status', [PatientVisitController::class, 'updateServiceStatus'])
-        ->name('service-records.update-status');
-    
-    // Imaging Services
-    Route::resource('imaging-services', ImagingServiceController::class)->except(['show']);
-    
-    // Radiology Reports
-    Route::resource('radiology-reports', RadiologyReportController::class);
-    Route::post('reports/{report}/finalize', [RadiologyReportController::class, 'finalize'])
-        ->name('reports.finalize');
-    Route::get('reports/{report}/preview', [RadiologyReportController::class, 'preview'])
-        ->name('reports.preview');
-    Route::get('reports/{report}/download', [RadiologyReportController::class, 'downloadPDF'])
-        ->name('reports.download');
-    Route::get('reports/create/for-service/{serviceRecord}', [RadiologyReportController::class, 'create'])
-        ->name('reports.create.for-service');
-    
-    // Report Delivery
-    Route::post('reports/{report}/send', [ReportDeliveryController::class, 'sendReport'])
-        ->name('reports.send');
-    Route::post('reports/bulk-send', [ReportDeliveryController::class, 'sendBulkReports'])
-        ->name('reports.bulk-send');
-    Route::get('report-delivery/history', [ReportDeliveryController::class, 'deliveryHistory'])
-        ->name('report-delivery.history');
+
+    // User dashboard & profile
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::view('/profile', 'profile')->name('profile');
+
+    // Logged-in user's appointments (optional - only if you built it)
+    Route::get('/my-appointments', [PublicAppointmentController::class, 'myAppointments'])->name('appointments.my');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Platform (Patient Management System)
+    |--------------------------------------------------------------------------
+    | Everything admin lives under /admin to avoid conflicts with public pages.
+    | Later you can add role middleware: ->middleware(['auth','can:admin'])
+    */
+
+    Route::prefix('admin')->name('admin.')->group(function () {
+
+        // Admin dashboard (you can point this to DashboardController or a dedicated AdminDashboardController)
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Appointments (Read-Only Admin View)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/appointments', [AdminAppointmentController::class, 'index'])->name('appointments.index');
+        Route::get('/appointments/{appointment}', [AdminAppointmentController::class, 'show'])->name('appointments.show');
+
+        // OPTIONAL: Convert appointment -> visit (we can implement later)
+        // Route::post('/appointments/{appointment}/convert-to-visit', [AdminAppointmentController::class, 'convertToVisit'])
+        //     ->name('appointments.convert');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Services Catalog (Procedures)
+        |--------------------------------------------------------------------------
+        */
+        Route::resource('/services', ServiceController::class)->except(['show']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Patients
+        |--------------------------------------------------------------------------
+        */
+        Route::resource('/patients', PatientController::class);
+        Route::get('/patients/search/quick', [PatientController::class, 'search'])->name('patients.search.quick');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Visits (Encounter Header)
+        |--------------------------------------------------------------------------
+        */
+        Route::resource('/visits', VisitController::class);
+
+        // View all visits for a patient (nice shortcut)
+        Route::get('/patients/{patient}/visits', [VisitController::class, 'byPatient'])->name('visits.by-patient');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Imaging Services (Performed Exams / Line Items)
+        |--------------------------------------------------------------------------
+        | Note: these are created *for a visit*
+        */
+        Route::post('/visits/{visit}/imaging-services', [ImagingServiceController::class, 'storeForVisit'])
+            ->name('visits.imaging-services.store');
+
+        Route::patch('/imaging-services/{imagingService}/status', [ImagingServiceController::class, 'updateStatus'])
+            ->name('imaging-services.update-status');
+
+        Route::resource('/imaging-services', ImagingServiceController::class)->except(['create', 'store']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Radiology Reports (1 per Imaging Service)
+        |--------------------------------------------------------------------------
+        */
+        // Create/edit report for a specific imaging service
+        Route::get('/imaging-services/{imagingService}/report/create', [RadiologyReportController::class, 'createForImagingService'])
+            ->name('reports.create.for-imaging-service');
+
+        Route::post('/imaging-services/{imagingService}/report', [RadiologyReportController::class, 'storeForImagingService'])
+            ->name('reports.store.for-imaging-service');
+
+        Route::resource('/reports', RadiologyReportController::class)->except(['create', 'store']);
+
+        // Report actions
+        Route::post('/reports/{radiologyReport}/finalize', [RadiologyReportController::class, 'finalize'])
+            ->name('reports.finalize');
+
+        Route::get('/reports/{radiologyReport}/preview', [RadiologyReportController::class, 'preview'])
+            ->name('reports.preview');
+
+        Route::get('/reports/{radiologyReport}/download', [RadiologyReportController::class, 'download'])
+            ->name('reports.download');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Report Delivery (Email Send + History)
+        |--------------------------------------------------------------------------
+        */
+        Route::post('/reports/{radiologyReport}/send', [ReportDeliveryController::class, 'send'])
+            ->name('reports.send');
+
+        Route::get('/deliveries', [ReportDeliveryController::class, 'index'])
+            ->name('deliveries.index');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Finance (Revenue Reports)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/finance', [FinanceController::class, 'dashboard'])->name('finance.dashboard');
+
+        Route::get('/finance/reports/daily', [FinanceController::class, 'daily'])->name('finance.reports.daily');
+        Route::get('/finance/reports/weekly', [FinanceController::class, 'weekly'])->name('finance.reports.weekly');
+        Route::get('/finance/reports/monthly', [FinanceController::class, 'monthly'])->name('finance.reports.monthly');
+        Route::get('/finance/reports/yearly', [FinanceController::class, 'yearly'])->name('finance.reports.yearly');
+
+        // OPTIONAL: invoices/payments CRUD later
+        // Route::resource('/invoices', InvoiceController::class);
+        // Route::resource('/payments', PaymentController::class)->only(['store', 'index', 'show']);
+    });
 });
+
 
 /*
 |--------------------------------------------------------------------------
 | Development & Testing Routes
 |--------------------------------------------------------------------------
 */
+Route::view('/test', 'test')->name('test');
 
-// Test route for development
-Route::get('/test', function () {
-    return view('test');
-})->name('test');
-
-// Route to check if patient management system is accessible (for testing)
 Route::get('/test-patient-system', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('admin.dashboard');
     }
     return 'Patient Management System is installed. Please login to access it.';
 })->name('test.patient.system');
