@@ -3,66 +3,53 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreVisitRequest;
-use App\Http\Requests\Admin\UpdateVisitRequest;
+use App\Http\Requests\StoreVisitRequest;
+use App\Http\Requests\UpdateVisitRequest;
 use App\Models\Patient;
 use App\Models\Visit;
 use Illuminate\Http\Request;
 
 class VisitController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Visit::query()
-            ->with(['patient'])
-            ->latest();
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->string('status'));
-        }
-
-        if ($request->filled('date')) {
-            $query->whereDate('visit_date', $request->string('date'));
-        }
-
-        if ($request->filled('q')) {
-            $q = '%' . $request->string('q') . '%';
-            $query->whereHas('patient', function ($p) use ($q) {
-                $p->where('first_name', 'like', $q)
-                    ->orWhere('last_name', 'like', $q)
-                    ->orWhere('phone', 'like', $q)
-                    ->orWhere('patient_number', 'like', $q);
-            });
-        }
-
-        $visits = $query->paginate(20)->withQueryString();
+        $visits = Visit::with('patient')
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
 
         return view('admin.visits.index', compact('visits'));
     }
 
     public function byPatient(Patient $patient)
     {
-        $visits = $patient->visits()->latest()->paginate(20)->withQueryString();
-        return view('admin.visits.by-patient', compact('patient', 'visits'));
+        $visits = $patient->visits()
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+
+        // reuse the same visits index view but with patient context
+        return view('admin.visits.index', [
+            'visits' => $visits,
+            'patient' => $patient,
+        ]);
     }
 
-    public function create(Request $request)
+    public function create()
     {
-        // Allow preselect patient ?patient_id=...
-        $patient = null;
-        if ($request->filled('patient_id')) {
-            $patient = Patient::find($request->integer('patient_id'));
-        }
+        // ✅ The view expects $patients
+        $patients = Patient::query()
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->limit(500)
+            ->get();
 
-        return view('admin.visits.create', compact('patient'));
+        return view('admin.visits.create', compact('patients'));
     }
 
     public function store(StoreVisitRequest $request)
     {
-        $data = $request->validated();
-        $data['created_by'] = auth()->id();
-
-        $visit = Visit::create($data);
+        $visit = Visit::create($request->validated());
 
         return redirect()
             ->route('admin.visits.show', $visit)
@@ -71,19 +58,20 @@ class VisitController extends Controller
 
     public function show(Visit $visit)
     {
-        $visit->load([
-            'patient',
-            'imagingServices.service',
-            'imagingServices.report',
-        ]);
+        $visit->load(['patient', 'imagingServices.service', 'imagingServices.report']);
 
         return view('admin.visits.show', compact('visit'));
     }
 
     public function edit(Visit $visit)
     {
-        $visit->load('patient');
-        return view('admin.visits.edit', compact('visit'));
+        $patients = Patient::query()
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->limit(500)
+            ->get();
+
+        return view('admin.visits.edit', compact('visit', 'patients'));
     }
 
     public function update(UpdateVisitRequest $request, Visit $visit)

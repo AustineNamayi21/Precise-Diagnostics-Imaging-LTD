@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreImagingServiceForVisitRequest;
-use App\Http\Requests\Admin\UpdateImagingServiceStatusRequest;
-use App\Http\Requests\Admin\UpdateImagingServiceRequest;
+use App\Http\Requests\StoreImagingServiceForVisitRequest;
+use App\Http\Requests\UpdateImagingServiceStatusRequest;
+use App\Http\Requests\UpdateImagingServiceRequest;
 use App\Models\ImagingService;
 use App\Models\Service;
 use App\Models\Visit;
@@ -50,13 +50,20 @@ class ImagingServiceController extends Controller
     public function show(ImagingService $imaging_service)
     {
         $imaging_service->load(['visit.patient', 'service', 'report']);
-        return view('admin.imaging-services.show', ['imagingService' => $imaging_service]);
+
+        return view('admin.imaging-services.show', [
+            'imagingService' => $imaging_service
+        ]);
     }
 
     public function edit(ImagingService $imaging_service)
     {
         $imaging_service->load(['visit.patient', 'service']);
-        $services = Service::query()->where('is_active', true)->orderBy('name')->get();
+
+        $services = Service::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
 
         return view('admin.imaging-services.edit', [
             'imagingService' => $imaging_service,
@@ -75,17 +82,19 @@ class ImagingServiceController extends Controller
 
     public function destroy(ImagingService $imaging_service)
     {
-        $visitId = $imaging_service->visit_id;
+        $visit = $imaging_service->visit; // ✅ get Visit instance for safe redirect
         $imaging_service->delete();
 
         return redirect()
-            ->route('admin.visits.show', $visitId)
+            ->route('admin.visits.show', $visit)
             ->with('success', 'Imaging service deleted successfully.');
     }
 
     public function updateStatus(UpdateImagingServiceStatusRequest $request, ImagingService $imagingService)
     {
-        $imagingService->update(['status' => $request->validated()['status']]);
+        $imagingService->update([
+            'status' => $request->validated()['status']
+        ]);
 
         return back()->with('success', 'Status updated successfully.');
     }

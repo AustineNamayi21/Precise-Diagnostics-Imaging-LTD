@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreRadiologyReportRequest;
-use App\Http\Requests\Admin\UpdateRadiologyReportRequest;
+use App\Http\Requests\StoreRadiologyReportRequest;
+use App\Http\Requests\UpdateRadiologyReportRequest;
 use App\Models\ImagingService;
 use App\Models\RadiologyReport;
 use App\Services\ReportService;
@@ -35,7 +35,7 @@ class RadiologyReportController extends Controller
     {
         $imagingService->load(['visit.patient', 'service', 'report']);
 
-        // Enforce 1 report per imaging service
+        // ✅ Enforce 1 report per imaging service
         if ($imagingService->report) {
             return redirect()
                 ->route('admin.reports.edit', $imagingService->report)
@@ -62,12 +62,14 @@ class RadiologyReportController extends Controller
     public function show(RadiologyReport $report)
     {
         $report->load(['imagingService.service', 'imagingService.visit.patient', 'deliveries']);
+
         return view('admin.reports.show', compact('report'));
     }
 
     public function edit(RadiologyReport $report)
     {
         $report->load(['imagingService.service', 'imagingService.visit.patient', 'deliveries']);
+
         return view('admin.reports.edit', compact('report'));
     }
 
@@ -77,7 +79,7 @@ class RadiologyReportController extends Controller
             report: $report,
             reportText: $request->validated()['report_text'] ?? null,
             attachment: $request->file('attachment'),
-            removeAttachment: (bool)($request->validated()['remove_attachment'] ?? false)
+            removeAttachment: (bool) ($request->validated()['remove_attachment'] ?? false)
         );
 
         return redirect()
@@ -106,6 +108,7 @@ class RadiologyReportController extends Controller
     public function preview(RadiologyReport $radiologyReport)
     {
         $radiologyReport->load(['imagingService.service', 'imagingService.visit.patient']);
+
         return view('admin.reports.preview', ['report' => $radiologyReport]);
     }
 

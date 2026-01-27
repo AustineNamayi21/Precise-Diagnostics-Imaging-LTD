@@ -33,7 +33,9 @@ class ReportService
         ];
 
         if ($attachment) {
-            $path = $attachment->store('radiology_reports');
+            // ✅ Store on PUBLIC disk for consistent access + downloads + storage:link
+            $path = $attachment->store('radiology_reports', 'public');
+
             $payload['attachment_path'] = $path;
             $payload['attachment_name'] = $attachment->getClientOriginalName();
             $payload['attachment_mime'] = $attachment->getClientMimeType();
@@ -54,6 +56,7 @@ class ReportService
         }
 
         $update = [];
+
         if (!is_null($reportText)) {
             $update['report_text'] = $reportText;
         }
@@ -69,7 +72,9 @@ class ReportService
         if ($attachment) {
             $this->deleteAttachmentIfExists($report);
 
-            $path = $attachment->store('radiology_reports');
+            // ✅ Store on public disk
+            $path = $attachment->store('radiology_reports', 'public');
+
             $update['attachment_path'] = $path;
             $update['attachment_name'] = $attachment->getClientOriginalName();
             $update['attachment_mime'] = $attachment->getClientMimeType();
@@ -87,7 +92,8 @@ class ReportService
             return;
         }
 
-        if (!$report->attachment_path || !Storage::exists($report->attachment_path)) {
+        // ✅ Must validate attachment exists on public disk
+        if (!$report->attachment_path || !Storage::disk('public')->exists($report->attachment_path)) {
             throw new \RuntimeException('Cannot finalize a report without an uploaded attachment.');
         }
 
@@ -97,6 +103,7 @@ class ReportService
             'finalized_at' => now(),
         ]);
 
+        // Update imaging service status
         $report->imagingService()->update(['status' => 'reported']);
     }
 
@@ -112,7 +119,7 @@ class ReportService
             throw new \RuntimeException('Only FINAL reports can be sent.');
         }
 
-        if (!$report->attachment_path || !Storage::exists($report->attachment_path)) {
+        if (!$report->attachment_path || !Storage::disk('public')->exists($report->attachment_path)) {
             throw new \RuntimeException('No attachment found to send.');
         }
 
@@ -124,20 +131,18 @@ class ReportService
         }
 
         $serviceName = $report->imagingService->service->name ?? 'Imaging Service';
-        $patientName = method_exists($patient, 'getFullNameAttribute')
-            ? $patient->full_name
-            : trim($patient->first_name . ' ' . $patient->last_name);
+        $patientName = trim(($patient->first_name ?? '') . ' ' . ($patient->last_name ?? ''));
 
         $subject = 'Your Radiology Report - Precise Diagnostics Imaging';
         $body = $customMessage ?: $this->defaultEmailBody($patientName, $serviceName);
 
-        $absolutePath = storage_path('app/' . $report->attachment_path);
+        // ✅ Build absolute file path for PHPMailer from public disk
+        $absolutePath = Storage::disk('public')->path($report->attachment_path);
         $attachmentName = $report->attachment_name ?: basename($report->attachment_path);
 
         $sentAt = now();
 
         try {
-            // This method MUST exist in your PhpMailerService
             $this->mailer->sendWithAttachment(
                 to: $toEmail,
                 subject: $subject,
@@ -172,12 +177,13 @@ class ReportService
 
     public function downloadAttachment(RadiologyReport $report): StreamedResponse
     {
-        if (!$report->attachment_path || !Storage::exists($report->attachment_path)) {
+        if (!$report->attachment_path || !Storage::disk('public')->exists($report->attachment_path)) {
             abort(404, 'No attachment found for this report.');
         }
 
         $name = $report->attachment_name ?: basename($report->attachment_path);
-        return Storage::download($report->attachment_path, $name);
+
+        return Storage::disk('public')->download($report->attachment_path, $name);
     }
 
     public function deleteReport(RadiologyReport $report): void
@@ -188,8 +194,8 @@ class ReportService
 
     private function deleteAttachmentIfExists(RadiologyReport $report): void
     {
-        if ($report->attachment_path && Storage::exists($report->attachment_path)) {
-            Storage::delete($report->attachment_path);
+        if ($report->attachment_path && Storage::disk('public')->exists($report->attachment_path)) {
+            Storage::disk('public')->delete($report->attachment_path);
         }
     }
 

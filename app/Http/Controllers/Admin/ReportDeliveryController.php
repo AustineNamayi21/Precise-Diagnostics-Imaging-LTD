@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\SendRadiologyReportRequest;
+use App\Http\Requests\SendRadiologyReportRequest;
 use App\Models\RadiologyReport;
 use App\Models\ReportDelivery;
 use App\Services\ReportService;

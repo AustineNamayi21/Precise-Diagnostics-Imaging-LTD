@@ -1,0 +1,213 @@
+/* ===============================
+   Precise Diagnostics Admin UI
+   Stable flex layout + sidebar
+   =============================== */
+
+:root{
+  --pd-sidebar-w: 280px;
+  --pd-bg: #f4f7fb;
+  --pd-card: #ffffff;
+  --pd-border: rgba(15, 23, 42, .08);
+  --pd-text: #0f172a;
+  --pd-muted: rgba(15, 23, 42, .65);
+  --pd-primary: #0b5ed7;
+  --pd-sidebar-1: #0a2a43;
+  --pd-sidebar-2: #0b4a6f;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body.admin-body{
+  margin: 0;
+  background: var(--pd-bg);
+  color: var(--pd-text);
+  overflow-x: hidden;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* Shell: Sidebar + Main */
+.admin-shell{
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar */
+.admin-sidebar{
+  width: var(--pd-sidebar-w);
+  flex: 0 0 var(--pd-sidebar-w);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1040;
+
+  background: linear-gradient(180deg, var(--pd-sidebar-2), var(--pd-sidebar-1));
+  color: #fff;
+  box-shadow: 0 18px 45px rgba(2, 8, 23, .25);
+  padding: 16px 14px;
+}
+
+.sidebar-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding: 8px 8px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  margin-bottom: 14px;
+}
+
+.brand-mark{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(255,255,255,.14);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
+}
+
+.brand-title{ font-weight: 800; line-height: 1.1; }
+.brand-sub{ font-size: .85rem; opacity: .85; }
+
+.sidebar-user{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding: 14px 8px;
+  margin: 10px 0 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.08);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+.user-avatar{
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(255,255,255,.14);
+}
+
+.user-name{ font-weight: 700; }
+.user-role{ font-size: .85rem; opacity: .80; }
+
+.sidebar-nav{
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+.nav-section{
+  margin-top: 14px;
+  padding: 10px 10px 6px;
+  font-size: .72rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .65;
+}
+
+.sidebar-nav .nav-link{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  color: rgba(255,255,255,.92);
+  text-decoration:none;
+  transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+}
+
+.sidebar-nav .nav-link:hover{
+  background: rgba(255,255,255,.10);
+  transform: translateX(2px);
+}
+
+.sidebar-nav .nav-link.active{
+  background: rgba(255,255,255,.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
+}
+
+.sidebar-footer{
+  margin-top: 18px;
+  padding: 12px 8px 6px;
+  opacity: .75;
+}
+
+/* Main */
+.admin-main{
+  flex: 1;
+  min-width: 0;          /* important so flex children don't overflow */
+  display:flex;
+  flex-direction:column;
+  z-index: 1;
+}
+
+/* Topbar */
+.admin-topbar{
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--pd-border);
+  padding: 14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.page-title{
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.page-sub{
+  color: var(--pd-muted);
+  font-size: .88rem;
+}
+
+.admin-content{
+  padding: 18px;
+}
+
+/* Cards (nice default) */
+.pd-card{
+  border: 1px solid var(--pd-border);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(2, 8, 23, .06);
+}
+
+/* Mobile sidebar behavior */
+@media (max-width: 991.98px){
+  .admin-sidebar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-110%);
+    transition: transform .18s ease;
+  }
+  .admin-sidebar.is-open{
+    transform: translateX(0);
+  }
+  .admin-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(2,6,23,.45);
+    backdrop-filter: blur(2px);
+    z-index: 1035;
+    display:none;
+  }
+  .admin-overlay.is-open{
+    display:block;
+  }
+}
