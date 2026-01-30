@@ -9,6 +9,56 @@ use PHPMailer\PHPMailer\PHPMailer;
 class PhpMailerService
 {
     /**
+     * Resolve SMTP settings in a forgiving way across Laravel versions/config styles.
+     */
+    protected function smtp(string $key, mixed $default = null): mixed
+    {
+        // Prefer mailer config (Laravel 10/11/12 style)
+        $mailerKey = "mail.mailers.smtp.{$key}";
+        $value = config($mailerKey);
+
+        if ($value !== null && $value !== '') {
+            return $value;
+        }
+
+        // Fallback to old/simple mail keys (some projects use these)
+        $legacyMap = [
+            'host' => 'mail.host',
+            'port' => 'mail.port',
+            'username' => 'mail.username',
+            'password' => 'mail.password',
+            'encryption' => 'mail.encryption',
+        ];
+
+        if (isset($legacyMap[$key])) {
+            $legacyValue = config($legacyMap[$key]);
+            if ($legacyValue !== null && $legacyValue !== '') {
+                return $legacyValue;
+            }
+        }
+
+        // Final fallback to env directly (last resort)
+        $envMap = [
+            'host' => ['MAIL_MAILERS_SMTP_HOST', 'MAIL_HOST'],
+            'port' => ['MAIL_MAILERS_SMTP_PORT', 'MAIL_PORT'],
+            'username' => ['MAIL_MAILERS_SMTP_USERNAME', 'MAIL_USERNAME'],
+            'password' => ['MAIL_MAILERS_SMTP_PASSWORD', 'MAIL_PASSWORD'],
+            'encryption' => ['MAIL_MAILERS_SMTP_ENCRYPTION', 'MAIL_ENCRYPTION'],
+        ];
+
+        if (isset($envMap[$key])) {
+            foreach ($envMap[$key] as $envKey) {
+                $envValue = env($envKey);
+                if ($envValue !== null && $envValue !== '') {
+                    return $envValue;
+                }
+            }
+        }
+
+        return $default;
+    }
+
+    /**
      * Create and configure a new PHPMailer instance.
      * We create a NEW instance per send to avoid state leakage.
      */
@@ -24,24 +74,44 @@ class PhpMailerService
         };
 
         $mailer->isSMTP();
-        $mailer->Host = (string) config('mail.mailers.smtp.host');
-        $mailer->Port = (int) config('mail.mailers.smtp.port', 587);
+
+        // Host/Port
+        $mailer->Host = (string) $this->smtp('host', 'smtp.gmail.com');
+        $mailer->Port = (int) $this->smtp('port', 587);
 
         // Auth
         $mailer->SMTPAuth = true;
-        $mailer->Username = (string) config('mail.mailers.smtp.username');
-        $mailer->Password = (string) config('mail.mailers.smtp.password');
+        $mailer->Username = (string) $this->smtp('username', '');
+        $mailer->Password = (string) $this->smtp('password', '');
+
+        if ($mailer->Username === '' || $mailer->Password === '') {
+            throw new \RuntimeException(
+                'SMTP username/password not set. Check MAIL_* / MAIL_MAILERS_SMTP_* in .env and config/mail.php'
+            );
+        }
 
         // Encryption handling: tls/ssl/none
-        $enc = config('mail.mailers.smtp.encryption');
+        $enc = $this->smtp('encryption', null);
         if (is_string($enc)) {
             $enc = strtolower(trim($enc));
         }
 
+        // If port is 587 and enc missing, assume tls (common Gmail setup)
+        if (($enc === null || $enc === '') && (int) $mailer->Port === 587) {
+            $enc = 'tls';
+        }
+
+        // If port is 465 and enc missing, assume ssl
+        if (($enc === null || $enc === '') && (int) $mailer->Port === 465) {
+            $enc = 'ssl';
+        }
+
         if ($enc === 'tls') {
             $mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mailer->SMTPAutoTLS = true;
         } elseif ($enc === 'ssl') {
             $mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mailer->SMTPAutoTLS = true;
         } else {
             // no encryption
             $mailer->SMTPSecure = false;
@@ -52,9 +122,13 @@ class PhpMailerService
         $mailer->Timeout = 30;
         $mailer->SMTPKeepAlive = false;
 
-        // From / Reply-To
-        $fromAddress = (string) config('mail.from.address');
-        $fromName = (string) config('mail.from.name', config('app.name', 'Precise Diagnostics Imaging'));
+        // From / Reply-To (also forgiving)
+        $fromAddress =
+            (string) (config('mail.from.address') ?: env('MAIL_FROM_ADDRESS', ''));
+
+        $fromName =
+            (string) (config('mail.from.name')
+                ?: env('MAIL_FROM_NAME', config('app.name', 'Precise Diagnostics Imaging')));
 
         if ($fromAddress === '') {
             throw new \RuntimeException('MAIL_FROM_ADDRESS is not set. Check your .env and config/mail.php');
@@ -77,17 +151,6 @@ class PhpMailerService
      *  - string email: "someone@gmail.com"
      *  - array list: ["a@gmail.com", "b@gmail.com"]
      *  - associative: ["a@gmail.com" => "Name A", "b@gmail.com" => "Name B"]
-     *
-     * $attachments:
-     *  - string path: "C:/.../file.pdf"
-     *  - descriptor array:
-     *      [
-     *        'path' => '/abs/path/file.pdf', 'name' => 'Report.pdf', 'type' => 'application/pdf'
-     *      ]
-     *  - descriptor with 'content' => binary string:
-     *      [
-     *        'content' => $binary, 'name' => 'file.pdf', 'type' => 'application/pdf'
-     *      ]
      */
     public function sendEmail(
         string|array $to,
@@ -126,6 +189,9 @@ class PhpMailerService
                 'error' => $e->getMessage(),
                 'to' => $to,
                 'subject' => $subject,
+                'host' => $mailer->Host ?? null,
+                'port' => $mailer->Port ?? null,
+                'encryption' => $this->smtp('encryption', null),
             ]);
 
             throw new \RuntimeException('Email could not be sent: ' . $e->getMessage(), 0, $e);
@@ -133,7 +199,6 @@ class PhpMailerService
     }
 
     /**
-     * This is the exact method used by ReportService in the new system.
      * It sends ONE attachment from disk (absolute path).
      */
     public function sendWithAttachment(
@@ -160,10 +225,6 @@ class PhpMailerService
 
     /**
      * Optional helper: send a RadiologyReport to the patient.
-     * Updated to NEW schema:
-     *   $report->imagingService->visit->patient
-     *
-     * This method expects the report has an attachment stored on disk (path).
      */
     public function sendRadiologyReport(\App\Models\RadiologyReport $report, ?string $overrideEmail = null): bool
     {
@@ -250,21 +311,16 @@ class PhpMailerService
             return;
         }
 
-        // array
         foreach ($to as $key => $value) {
-            // Associative ["email" => "Name"]
             if (is_string($key) && filter_var($key, FILTER_VALIDATE_EMAIL)) {
                 $mailer->addAddress($key, (string) $value);
                 continue;
             }
 
-            // Numeric list ["email1", "email2"]
             if (is_string($value) && filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 $mailer->addAddress($value);
                 continue;
             }
-
-            // If someone passes [0 => ["email" => "...", "name" => "..."]] we ignore for safety
         }
     }
 
@@ -293,7 +349,6 @@ class PhpMailerService
     protected function addAttachments(PHPMailer $mailer, array $attachments): void
     {
         foreach ($attachments as $attachment) {
-            // simple string file path
             if (is_string($attachment)) {
                 if (is_file($attachment)) {
                     $mailer->addAttachment($attachment);
@@ -301,9 +356,7 @@ class PhpMailerService
                 continue;
             }
 
-            // descriptor array
             if (is_array($attachment)) {
-                // String attachment (binary content)
                 if (isset($attachment['content'])) {
                     $content = (string) $attachment['content'];
                     $name = (string) ($attachment['name'] ?? 'attachment.pdf');
@@ -313,7 +366,6 @@ class PhpMailerService
                     continue;
                 }
 
-                // File attachment
                 if (isset($attachment['path'])) {
                     $path = (string) $attachment['path'];
                     if (!is_file($path)) {

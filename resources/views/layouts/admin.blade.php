@@ -62,13 +62,29 @@
                 <i class="fa-solid fa-x-ray me-2"></i> Imaging Services
             </a>
 
-            <a class="nav-link @if(request()->routeIs('admin.reports.*')) active @endif" href="{{ route('admin.reports.index') }}">
-                <i class="fa-solid fa-file-medical me-2"></i> Reports
-            </a>
+            {{-- Reports (FIXED: was admin.reports.*) --}}
+            @if(Route::has('admin.radiology-reports.index'))
+                <a class="nav-link @if(request()->routeIs('admin.radiology-reports.*')) active @endif"
+                   href="{{ route('admin.radiology-reports.index') }}">
+                    <i class="fa-solid fa-file-medical me-2"></i> Reports
+                </a>
+            @else
+                <a class="nav-link disabled" href="#" aria-disabled="true" onclick="return false;">
+                    <i class="fa-solid fa-file-medical me-2"></i> Reports
+                </a>
+            @endif
 
-            <a class="nav-link @if(request()->routeIs('admin.deliveries.*')) active @endif" href="{{ route('admin.deliveries.index') }}">
-                <i class="fa-solid fa-paper-plane me-2"></i> Deliveries
-            </a>
+            {{-- Deliveries (FIXED: was admin.deliveries.*) --}}
+            @if(Route::has('admin.report-deliveries.index'))
+                <a class="nav-link @if(request()->routeIs('admin.report-deliveries.*')) active @endif"
+                   href="{{ route('admin.report-deliveries.index') }}">
+                    <i class="fa-solid fa-paper-plane me-2"></i> Deliveries
+                </a>
+            @else
+                <a class="nav-link disabled" href="#" aria-disabled="true" onclick="return false;">
+                    <i class="fa-solid fa-paper-plane me-2"></i> Deliveries
+                </a>
+            @endif
 
             <div class="nav-section">Operations</div>
 
@@ -80,15 +96,30 @@
                 <i class="fa-solid fa-list-check me-2"></i> Services Catalog
             </a>
 
-            <a class="nav-link @if(request()->routeIs('admin.finance.*')) active @endif" href="{{ route('admin.finance.dashboard') }}">
-                <i class="fa-solid fa-coins me-2"></i> Finance
-            </a>
+            {{-- Finance (FIXED: was admin.finance.dashboard) --}}
+            @if(Route::has('admin.finance.index'))
+                <a class="nav-link @if(request()->routeIs('admin.finance.*')) active @endif"
+                   href="{{ route('admin.finance.index') }}">
+                    <i class="fa-solid fa-coins me-2"></i> Finance
+                </a>
+            @else
+                <a class="nav-link disabled" href="#" aria-disabled="true" onclick="return false;">
+                    <i class="fa-solid fa-coins me-2"></i> Finance
+                </a>
+            @endif
 
             <div class="nav-section">Account</div>
 
-            <a class="nav-link" href="{{ route('profile') }}">
-                <i class="fa-solid fa-id-badge me-2"></i> Profile
-            </a>
+            {{-- Profile route is not in your route:list, so make it safe --}}
+            @if(Route::has('profile'))
+                <a class="nav-link" href="{{ route('profile') }}">
+                    <i class="fa-solid fa-id-badge me-2"></i> Profile
+                </a>
+            @else
+                <a class="nav-link disabled" href="#" aria-disabled="true" onclick="return false;">
+                    <i class="fa-solid fa-id-badge me-2"></i> Profile
+                </a>
+            @endif
 
             <form method="POST" action="{{ route('logout') }}" class="mt-2">
                 @csrf

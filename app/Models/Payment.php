@@ -8,26 +8,39 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Payment extends Model
 {
     protected $fillable = [
-        'invoice_id',
+        'patient_id',
+        'visit_id',
+        'imaging_service_id',
         'amount',
         'method',
         'reference',
         'paid_at',
-        'received_by',
+        'notes',
+        'created_by',
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
         'paid_at' => 'datetime',
+        'amount' => 'float',
     ];
 
-    public function invoice(): BelongsTo
+    public function patient(): BelongsTo
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(User::class, 'patient_id');
     }
 
-    public function receiver(): BelongsTo
+    public function visit(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'received_by');
+        return $this->belongsTo(Visit::class);
+    }
+
+    public function imagingService(): BelongsTo
+    {
+        return $this->belongsTo(ImagingService::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

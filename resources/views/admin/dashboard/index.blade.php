@@ -85,7 +85,9 @@
                     <div class="fw-bold"><i class="fa-solid fa-calendar-check me-2"></i>Recent Appointments</div>
                     <div class="text-muted small">Latest public bookings</div>
                 </div>
-                <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.appointments.index') }}">View all</a>
+                @if(Route::has('admin.appointments.index'))
+                    <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.appointments.index') }}">View all</a>
+                @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -127,8 +129,13 @@
                     <div class="fw-bold"><i class="fa-solid fa-file-medical me-2"></i>Recent Reports</div>
                     <div class="text-muted small">Latest created/updated reports</div>
                 </div>
-                <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.reports.index') }}">View all</a>
+
+                {{-- ✅ Fast Fix: correct route name + never crash --}}
+                @if(Route::has('admin.radiology-reports.index'))
+                    <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.radiology-reports.index') }}">View all</a>
+                @endif
             </div>
+
             <div class="card-body">
                 <div class="list-group">
                     @forelse($recentReports as $r)
@@ -136,16 +143,34 @@
                             $p = $r->imagingService?->visit?->patient;
                             $s = $r->imagingService?->service;
                         @endphp
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
-                           href="{{ route('admin.reports.show', $r) }}">
-                            <div>
-                                <div class="fw-semibold">
-                                    Report #{{ $r->id }} • {{ $p?->first_name }} {{ $p?->last_name }}
+
+                        {{-- ✅ Fast Fix: correct show route + never crash --}}
+                        @if(Route::has('admin.radiology-reports.show'))
+                            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+                               href="{{ route('admin.radiology-reports.show', $r) }}">
+                                <div>
+                                    <div class="fw-semibold">
+                                        Report #{{ $r->id }} • {{ $p?->first_name }} {{ $p?->last_name }}
+                                    </div>
+                                    <div class="text-muted small">{{ $s?->name ?? '—' }}</div>
                                 </div>
-                                <div class="text-muted small">{{ $s?->name ?? '—' }}</div>
+                                <span class="badge {{ $r->status==='final' ? 'text-bg-success' : 'text-bg-warning' }}">
+                                    {{ strtoupper($r->status) }}
+                                </span>
+                            </a>
+                        @else
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-semibold">
+                                        Report #{{ $r->id }} • {{ $p?->first_name }} {{ $p?->last_name }}
+                                    </div>
+                                    <div class="text-muted small">{{ $s?->name ?? '—' }}</div>
+                                </div>
+                                <span class="badge {{ $r->status==='final' ? 'text-bg-success' : 'text-bg-warning' }}">
+                                    {{ strtoupper($r->status) }}
+                                </span>
                             </div>
-                            <span class="badge {{ $r->status==='final' ? 'text-bg-success' : 'text-bg-warning' }}">{{ strtoupper($r->status) }}</span>
-                        </a>
+                        @endif
                     @empty
                         <div class="text-muted">No recent reports.</div>
                     @endforelse

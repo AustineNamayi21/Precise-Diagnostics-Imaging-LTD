@@ -48,7 +48,10 @@
                                 <td class="fw-semibold">#{{ $r->id }}</td>
                                 <td>
                                     <div class="fw-semibold">{{ $patient?->first_name }} {{ $patient?->last_name }}</div>
-                                    <div class="text-muted small">{{ $patient?->phone }} @if($patient?->email) • {{ $patient->email }} @endif</div>
+                                    <div class="text-muted small">
+                                        {{ $patient?->phone }}
+                                        @if($patient?->email) • {{ $patient->email }} @endif
+                                    </div>
                                 </td>
                                 <td>{{ $service?->name ?? '—' }}</td>
                                 <td>
@@ -64,16 +67,18 @@
                                     @endif
                                 </td>
                                 <td class="text-end">
-                                    <a href="{{ route('admin.reports.show', $r) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('admin.radiology-reports.show', $r) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="fa-solid fa-eye me-1"></i>View
                                     </a>
-                                    <a href="{{ route('admin.reports.edit', $r) }}" class="btn btn-sm btn-outline-secondary">
+                                    <a href="{{ route('admin.radiology-reports.edit', $r) }}" class="btn btn-sm btn-outline-secondary">
                                         <i class="fa-solid fa-pen-to-square me-1"></i>Edit
                                     </a>
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="text-center text-muted py-4">No reports found.</td></tr>
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No reports found.</td>
+                            </tr>
                         @endforelse
                         </tbody>
                     </table>

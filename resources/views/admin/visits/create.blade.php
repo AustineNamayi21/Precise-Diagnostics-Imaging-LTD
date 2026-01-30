@@ -6,8 +6,9 @@
 
 @section('content')
 @php
-    $patients = $patients ?? [];
-    $selectedPatientId = old('patient_id', request('patient_id'));
+    $patients = $patients ?? collect();
+    // ✅ Use controller-provided preselect if present, else fallback to querystring
+    $selectedPatientId = old('patient_id', $selectedPatientId ?? request('patient_id'));
 @endphp
 
 <div class="row g-3">
@@ -40,21 +41,34 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Visit Date</label>
-                            <input class="form-control" type="date" name="visit_date" value="{{ old('visit_date', now()->toDateString()) }}" required>
+                            <input
+                                class="form-control"
+                                type="date"
+                                name="visit_date"
+                                value="{{ old('visit_date', now()->toDateString()) }}"
+                                required
+                            >
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Status</label>
                             <select class="form-select" name="status">
                                 @foreach(['scheduled','in_progress','completed','cancelled'] as $s)
-                                    <option value="{{ $s }}" @selected(old('status','scheduled')===$s)>{{ ucfirst(str_replace('_',' ',$s)) }}</option>
+                                    <option value="{{ $s }}" @selected(old('status','scheduled')===$s)>
+                                        {{ ucfirst(str_replace('_',' ',$s)) }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Notes (optional)</label>
-                            <input class="form-control" name="notes" value="{{ old('notes') }}" placeholder="Clinical notes / reason...">
+                            <input
+                                class="form-control"
+                                name="notes"
+                                value="{{ old('notes') }}"
+                                placeholder="Clinical notes / reason..."
+                            >
                         </div>
                     </div>
 

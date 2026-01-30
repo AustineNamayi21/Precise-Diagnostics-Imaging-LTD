@@ -6,135 +6,273 @@
 
 @section('content')
 @php
-    $patient = $report->imagingService->visit->patient;
-    $service = $report->imagingService->service;
+    // Normalize variable name
+    $report = $report ?? $radiologyReport ?? $radiology_report ?? null;
+
+    $imaging = $report?->imagingService;
+    $visit   = $imaging?->visit;
+    $patient = $visit?->patient;
+    $service = $imaging?->service;
+
+    $reportId = $report?->id;
+    $isFinal  = (($report?->status ?? 'draft') === 'final');
 @endphp
 
+@if(!$report)
+    <div class="alert alert-danger">
+        Report variable not provided to the view.
+    </div>
+@else
 <div class="row g-3">
+
+    {{-- LEFT: REPORT DETAILS --}}
     <div class="col-12 col-lg-7" data-aos="fade-up">
         <div class="card pd-card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="fw-bold">Report #{{ $report->id }}</div>
-                    <div class="text-muted small">{{ $patient->first_name }} {{ $patient->last_name }} • {{ $service->name }}</div>
-                </div>
+                    <div class="fw-bold">Report #{{ $reportId }}</div>
+                    <div class="text-muted small">
+                        @if($patient)
+                            {{ $patient->first_name }} {{ $patient->last_name }}
+                        @else
+                            <span class="text-danger fw-semibold">Patient not linked</span>
+                        @endif
 
-                <span class="badge {{ $report->status === 'final' ? 'text-bg-success' : 'text-bg-warning' }}">
-                    {{ strtoupper($report->status) }}
-                </span>
-            </div>
+                        <span class="mx-2">•</span>
 
-            <div class="card-body">
-                <div class="mb-3">
-                    <div class="text-muted small">Patient Email</div>
-                    <div class="fw-semibold">{{ $patient->email ?? '— (missing)' }}</div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Attachment</div>
-                    @if($report->attachment_path)
-                        <div class="d-flex gap-2 align-items-center flex-wrap">
-                            <span class="badge text-bg-primary">
-                                <i class="fa-solid fa-paperclip me-1"></i>{{ $report->attachment_name ?? 'attachment' }}
-                            </span>
-                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.reports.download', $report) }}">
-                                <i class="fa-solid fa-download me-1"></i>Download
-                            </a>
-                        </div>
-                    @else
-                        <div class="text-muted">No attachment uploaded.</div>
-                    @endif
-                </div>
-
-                <div class="mb-3">
-                    <div class="text-muted small">Notes</div>
-                    <div class="border rounded-4 p-3 bg-light">
-                        {!! nl2br(e($report->report_text ?? '—')) !!}
+                        {{ $service?->name ?? 'Service not linked' }}
                     </div>
                 </div>
 
-                <div class="d-flex flex-wrap gap-2">
-                    <a class="btn btn-outline-secondary" href="{{ route('admin.reports.edit', $report) }}">
-                        <i class="fa-solid fa-pen-to-square me-1"></i>Edit
-                    </a>
-
-                    <form method="POST" action="{{ route('admin.reports.finalize', $report) }}" data-confirm="Finalize this report? It will be locked for editing.">
-                        @csrf
-                        <button class="btn btn-success" type="submit" @disabled($report->status==='final')>
-                            <i class="fa-solid fa-check me-1"></i>Finalize
+                <div class="d-flex gap-2">
+                    {{-- Build URL manually to avoid route binding issues --}}
+                    @if(!empty($reportId))
+                        <a href="{{ url('admin/radiology-reports/'.$reportId.'/edit') }}"
+                           class="btn btn-sm btn-outline-secondary">
+                            <i class="fa-solid fa-pen-to-square me-1"></i>Edit
+                        </a>
+                    @else
+                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
+                            <i class="fa-solid fa-pen-to-square me-1"></i>Edit
                         </button>
-                    </form>
+                    @endif
+
+                    <a href="{{ route('admin.radiology-reports.index') }}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="fa-solid fa-arrow-left me-1"></i>Back
+                    </a>
                 </div>
+            </div>
+
+            <div class="card-body">
+                @if(!$imaging || !$visit || !$patient || !$service)
+                    <div class="alert alert-warning">
+                        <div class="fw-semibold mb-1">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i>Incomplete Report Linkage
+                        </div>
+                        <div class="small">
+                            This report is missing one or more links (Imaging Service / Visit / Patient / Service).
+                            Some fields may show as “not linked”.
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Flash messages --}}
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        <i class="fa-solid fa-circle-check me-1"></i>{{ session('success') }}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        <i class="fa-solid fa-circle-xmark me-1"></i>{{ session('error') }}
+                    </div>
+                @endif
+                @if(session('info'))
+                    <div class="alert alert-info">
+                        <i class="fa-solid fa-circle-info me-1"></i>{{ session('info') }}
+                    </div>
+                @endif
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <div class="text-muted small">Status</div>
+                            <div class="fw-semibold">
+                                <span class="badge {{ $isFinal ? 'text-bg-success' : 'text-bg-warning' }}">
+                                    {{ strtoupper($report->status ?? 'draft') }}
+                                </span>
+                            </div>
+                            @if(!$isFinal)
+                                <div class="text-muted small mt-2">
+                                    Tip: Set status to <strong>FINAL</strong> before sending.
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <div class="text-muted small">Created</div>
+                            <div class="fw-semibold">
+                                {{ optional($report->created_at)->format('d M Y, H:i') ?? '—' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ✅ Correct: report_text --}}
+                    <div class="col-12">
+                        <div class="p-3 border rounded-3">
+                            <div class="fw-semibold mb-2">Report Notes / Findings</div>
+                            <div class="text-muted" style="white-space: pre-line;">
+                                {{ $report->report_text ?? '—' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Attachment --}}
+                    <div class="col-12">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <div class="fw-semibold mb-2">Attachment</div>
+
+                            @if($report->attachment_path)
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    <span class="badge text-bg-primary">Available</span>
+
+                                    <a class="btn btn-sm btn-outline-primary"
+                                       target="_blank"
+                                       href="{{ asset('storage/'.$report->attachment_path) }}">
+                                        <i class="fa-solid fa-paperclip me-1"></i>Open Attachment
+                                    </a>
+
+                                    <span class="text-muted small">{{ $report->attachment_path }}</span>
+                                </div>
+                                <div class="text-muted small mt-2">
+                                    If the link fails, run: <code>php artisan storage:link</code>
+                                </div>
+                            @else
+                                <span class="badge text-bg-secondary">No Attachment</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- Send panel -->
-    <div class="col-12 col-lg-5" data-aos="fade-up" data-aos-delay="80">
+    {{-- RIGHT: SUMMARY + SEND --}}
+    <div class="col-12 col-lg-5" data-aos="fade-up" data-aos-delay="100">
+
+        {{-- Patient summary --}}
+        <div class="card pd-card mb-3">
+            <div class="card-header">
+                <div class="fw-bold">Patient & Service Summary</div>
+                <div class="text-muted small">Linked details from visit & imaging service</div>
+            </div>
+
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="text-muted small">Patient</div>
+                    <div class="fw-semibold">
+                        {{ $patient ? ($patient->first_name.' '.$patient->last_name) : '—' }}
+                    </div>
+                    <div class="text-muted small">
+                        {{ $patient?->phone ?? '—' }}
+                        @if($patient?->email) • {{ $patient->email }} @endif
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="text-muted small">Service</div>
+                    <div class="fw-semibold">{{ $service?->name ?? '—' }}</div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="text-muted small">Visit</div>
+                    <div class="fw-semibold">
+                        {{ $visit?->id ? ('Visit #'.$visit->id) : '—' }}
+                    </div>
+                    <div class="text-muted small">
+                        {{ $visit?->visit_date ?? '—' }}
+                    </div>
+                </div>
+
+                <div class="mb-0">
+                    <div class="text-muted small">Imaging Service</div>
+                    <div class="fw-semibold">
+                        {{ $imaging?->id ? ('Imaging #'.$imaging->id) : '—' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ✅ Send Report Email Template --}}
         <div class="card pd-card">
             <div class="card-header">
-                <div class="fw-bold"><i class="fa-solid fa-paper-plane me-2"></i>Send Report</div>
-                <div class="text-muted small">Requires FINAL + attachment + patient email</div>
+                <div class="fw-bold">Send Report to Patient</div>
+                <div class="text-muted small">Email the attachment to the patient</div>
             </div>
+
             <div class="card-body">
-                <form method="POST" action="{{ route('admin.reports.send', $report) }}">
+                @if(!$isFinal)
+                    <div class="alert alert-warning">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                        This report is not <strong>FINAL</strong>. Finalize it before sending.
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('admin.radiology-reports.send', ['radiologyReport' => $reportId]) }}">
                     @csrf
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Override Email (optional)</label>
-                        <input class="form-control" name="email" value="{{ old('email') }}" placeholder="Leave blank to use patient email">
+                        <label class="form-label fw-semibold">Recipient Email</label>
+                        <input type="email"
+                               name="email"
+                               value="{{ old('email', $patient?->email) }}"
+                               class="form-control @error('email') is-invalid @enderror"
+                               placeholder="patient@example.com">
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">
+                            If the patient email is missing, type it here.
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Custom Message (optional)</label>
-                        <textarea class="form-control" name="message" rows="4" placeholder="Optional message to patient...">{{ old('message') }}</textarea>
+                        <label class="form-label fw-semibold">Optional Message</label>
+                        <textarea name="message"
+                                  rows="4"
+                                  class="form-control @error('message') is-invalid @enderror"
+                                  placeholder="Write a short note to the patient...">{{ old('message') }}</textarea>
+                        @error('message')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <button class="btn btn-pd w-100"
-                            @disabled($report->status!=='final' || !$report->attachment_path)>
-                        <i class="fa-solid fa-envelope me-2"></i>Send to Patient
+                    <button type="submit"
+                            class="btn btn-pd w-100"
+                            {{ $isFinal ? '' : 'disabled' }}>
+                        <i class="fa-solid fa-paper-plane me-1"></i>
+                        Send Report
                     </button>
 
-                    @if($report->status !== 'final')
-                        <div class="text-muted small mt-2">Finalize the report before sending.</div>
-                    @elseif(!$report->attachment_path)
-                        <div class="text-muted small mt-2">Upload an attachment before sending.</div>
+                    @if(!$report->attachment_path)
+                        <div class="text-danger small mt-2">
+                            <i class="fa-solid fa-circle-xmark me-1"></i>
+                            No attachment is uploaded. Upload the report file before sending.
+                        </div>
                     @endif
                 </form>
 
-                <hr class="my-4">
-
-                <div class="fw-bold mb-2">Delivery History</div>
-                <div class="small text-muted mb-2">All attempts are logged.</div>
-
-                <div class="list-group">
-                    @forelse($report->deliveries as $d)
-                        <div class="list-group-item d-flex justify-content-between align-items-start">
-                            <div>
-                                <div class="fw-semibold">
-                                    {{ $d->sent_to_email }}
-                                    @if($d->status==='sent')
-                                        <span class="badge text-bg-success ms-2">SENT</span>
-                                    @else
-                                        <span class="badge text-bg-danger ms-2">FAILED</span>
-                                    @endif
-                                </div>
-                                <div class="text-muted small">
-                                    {{ $d->sent_at ? \Illuminate\Support\Carbon::parse($d->sent_at)->format('Y-m-d H:i') : '—' }}
-                                    @if($d->sender) • by {{ $d->sender->name }} @endif
-                                </div>
-                                @if($d->status==='failed' && $d->error_message)
-                                    <div class="text-danger small mt-1">{{ $d->error_message }}</div>
-                                @endif
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-muted">No deliveries yet.</div>
-                    @endforelse
+                <div class="text-muted small mt-3">
+                    After sending, check <strong>Deliveries</strong> to see status (sent/failed) and error messages.
                 </div>
-
             </div>
         </div>
+
     </div>
 </div>
+@endif
 @endsection

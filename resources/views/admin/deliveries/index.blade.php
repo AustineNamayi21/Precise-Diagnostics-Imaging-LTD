@@ -2,96 +2,102 @@
 
 @section('title','Deliveries')
 @section('page_title','Report Deliveries')
-@section('page_subtitle','Email history and delivery audit trail')
+@section('page_subtitle','Track sent reports and delivery status')
 
 @section('content')
 <div class="row g-3">
     <div class="col-12" data-aos="fade-up">
         <div class="card pd-card">
-            <div class="card-header d-flex flex-wrap gap-2 align-items-center justify-content-between">
+            <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
                 <div>
                     <div class="fw-bold">Deliveries</div>
-                    <div class="text-muted small">Every send attempt is logged</div>
+                    <div class="text-muted small">All report delivery records</div>
                 </div>
 
-                <form class="d-flex gap-2" method="GET" action="{{ route('admin.deliveries.index') }}">
-                    <input class="form-control" type="date" name="date" value="{{ request('date') }}">
-                    <select class="form-select" name="status">
-                        <option value="">All Status</option>
-                        @foreach(['sent','failed'] as $s)
-                            <option value="{{ $s }}" @selected(request('status')===$s)>{{ ucfirst($s) }}</option>
-                        @endforeach
-                    </select>
-                    <button class="btn btn-pd"><i class="fa-solid fa-filter me-1"></i>Filter</button>
-                </form>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('admin.report-deliveries.index') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-rotate me-1"></i> Refresh
+                    </a>
+                </div>
             </div>
 
             <div class="card-body">
+
                 <div class="table-responsive">
                     <table class="table align-middle">
                         <thead>
                         <tr>
-                            <th>Sent To</th>
+                            <th>ID</th>
                             <th>Report</th>
-                            <th>Patient</th>
+                            <th>Recipient Email</th>
+                            <th>Sent By</th>
                             <th>Status</th>
                             <th>Sent At</th>
-                            <th class="text-end">Action</th>
+                            <th class="text-end">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         @forelse($deliveries as $d)
-                            @php
-                                $report = $d->report;
-                                $img = $report?->imagingService;
-                                $patient = $img?->visit?->patient;
-                            @endphp
                             <tr>
-                                <td class="fw-semibold">{{ $d->sent_to_email }}</td>
+                                <td class="fw-semibold">#{{ $d->id }}</td>
+
                                 <td>
-                                    @if($report)
-                                        <a class="text-decoration-none" href="{{ route('admin.reports.show', $report) }}">
-                                            Report #{{ $report->id }}
+                                    @if($d->report)
+                                        <a class="text-decoration-none"
+                                           href="{{ route('admin.radiology-reports.show', ['radiology_report' => $d->report->id]) }}">
+                                            Report #{{ $d->report->id }}
                                         </a>
                                     @else
-                                        —
+                                        <span class="text-muted">—</span>
                                     @endif
                                 </td>
+
                                 <td>
-                                    <div class="fw-semibold">{{ $patient?->first_name }} {{ $patient?->last_name }}</div>
-                                    <div class="text-muted small">{{ $patient?->phone }}</div>
-                                </td>
-                                <td>
-                                    @if($d->status === 'sent')
-                                        <span class="badge text-bg-success">SENT</span>
-                                    @else
-                                        <span class="badge text-bg-danger">FAILED</span>
+                                    <div class="fw-semibold">{{ $d->sent_to_email ?? '—' }}</div>
+                                    @if($d->error_message)
+                                        <div class="text-danger small mt-1">
+                                            {{ \Illuminate\Support\Str::limit($d->error_message, 60) }}
+                                        </div>
                                     @endif
                                 </td>
-                                <td class="text-muted small">{{ $d->sent_at ? \Illuminate\Support\Carbon::parse($d->sent_at)->format('Y-m-d H:i') : '—' }}</td>
+
+                                <td>
+                                    <div class="fw-semibold">{{ $d->sender?->name ?? '—' }}</div>
+                                    <div class="text-muted small">{{ $d->sender?->email ?? '' }}</div>
+                                </td>
+
+                                <td>
+                                    <span class="badge
+                                        {{ ($d->status ?? '') === 'sent' ? 'text-bg-success' : (($d->status ?? '') === 'failed' ? 'text-bg-danger' : 'text-bg-warning') }}">
+                                        {{ strtoupper($d->status ?? 'pending') }}
+                                    </span>
+                                </td>
+
+                                <td class="text-muted small">
+                                    {{ $d->sent_at ? $d->sent_at->toDayDateTimeString() : '—' }}
+                                </td>
+
                                 <td class="text-end">
-                                    @if($report)
-                                        <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.reports.show', $report) }}">
-                                            <i class="fa-solid fa-eye me-1"></i>View Report
-                                        </a>
-                                    @endif
+                                    <a class="btn btn-sm btn-outline-primary"
+                                       href="{{ route('admin.report-deliveries.show', ['report_delivery' => $d->id]) }}">
+                                        <i class="fa-solid fa-eye me-1"></i>View
+                                    </a>
                                 </td>
                             </tr>
-                            @if($d->status === 'failed' && $d->error_message)
-                                <tr>
-                                    <td colspan="6" class="text-danger small">
-                                        <i class="fa-solid fa-triangle-exclamation me-2"></i>{{ $d->error_message }}
-                                    </td>
-                                </tr>
-                            @endif
                         @empty
-                            <tr><td colspan="6" class="text-center text-muted py-4">No deliveries found.</td></tr>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    No deliveries found yet.
+                                </td>
+                            </tr>
                         @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                {{ $deliveries->links() ?? '' }}
+                @if(method_exists($deliveries, 'links'))
+                    {{ $deliveries->links() }}
+                @endif
             </div>
         </div>
     </div>

@@ -3,87 +3,135 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreVisitRequest;
-use App\Http\Requests\UpdateVisitRequest;
+use App\Http\Requests\Admin\StoreVisitRequest;
+use App\Http\Requests\Admin\UpdateVisitRequest;
 use App\Models\Patient;
+use App\Models\Service;
 use App\Models\Visit;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class VisitController extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of visits.
+     */
+    public function index(Request $request): View
     {
-        $visits = Visit::with('patient')
-            ->latest()
-            ->paginate(20)
-            ->withQueryString();
+        $query = Visit::query()->with(['patient'])->latest();
+
+        // ✅ Allow filtering by patient (used by patient show page "View all")
+        if ($request->filled('patient_id')) {
+            $query->where('patient_id', $request->patient_id);
+        }
+
+        $visits = $query->paginate(15)->withQueryString();
 
         return view('admin.visits.index', compact('visits'));
     }
 
-    public function byPatient(Patient $patient)
+    /**
+     * Show the form for creating a new visit.
+     */
+    public function create(Request $request): View
     {
-        $visits = $patient->visits()
-            ->latest()
-            ->paginate(20)
-            ->withQueryString();
-
-        // reuse the same visits index view but with patient context
-        return view('admin.visits.index', [
-            'visits' => $visits,
-            'patient' => $patient,
-        ]);
-    }
-
-    public function create()
-    {
-        // ✅ The view expects $patients
+        // ✅ Patients are in patients table (not users)
         $patients = Patient::query()
             ->orderBy('first_name')
             ->orderBy('last_name')
-            ->limit(500)
             ->get();
 
-        return view('admin.visits.create', compact('patients'));
+        // ✅ Preselect if coming from /admin/patients/{id} -> New Visit
+        $selectedPatientId = $request->get('patient_id');
+
+        return view('admin.visits.create', compact('patients', 'selectedPatientId'));
     }
 
-    public function store(StoreVisitRequest $request)
+    /**
+     * Store a newly created visit in storage.
+     */
+    public function store(StoreVisitRequest $request): RedirectResponse
     {
-        $visit = Visit::create($request->validated());
+        $data = $request->validated();
+
+        // Map notes -> clinical_notes if your DB uses clinical_notes
+        if (array_key_exists('notes', $data)) {
+            $data['clinical_notes'] = $data['notes'];
+            unset($data['notes']);
+        }
+
+        // Track creator (if column exists)
+        $data['created_by'] = auth()->id();
+
+        $visit = Visit::create($data);
+
+        // ✅ If visit was created while viewing a patient, go back to that patient
+        if (!empty($visit->patient_id)) {
+            return redirect()
+                ->route('admin.patients.show', ['patient' => $visit->patient_id])
+                ->with('success', 'Visit created successfully.');
+        }
 
         return redirect()
-            ->route('admin.visits.show', $visit)
+            ->route('admin.visits.index')
             ->with('success', 'Visit created successfully.');
     }
 
-    public function show(Visit $visit)
+    /**
+     * Display the specified visit.
+     */
+    public function show(Visit $visit): View
     {
-        $visit->load(['patient', 'imagingServices.service', 'imagingServices.report']);
+        $visit->load(['patient', 'imagingServices.service']);
 
-        return view('admin.visits.show', compact('visit'));
+        // Only fetch active services
+        $services = Service::query()
+            ->where('is_active', true)
+            ->orderBy('modality')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.visits.show', compact('visit', 'services'));
     }
 
-    public function edit(Visit $visit)
+    /**
+     * Show the form for editing the specified visit.
+     */
+    public function edit(Visit $visit): View
     {
         $patients = Patient::query()
             ->orderBy('first_name')
             ->orderBy('last_name')
-            ->limit(500)
             ->get();
 
         return view('admin.visits.edit', compact('visit', 'patients'));
     }
 
-    public function update(UpdateVisitRequest $request, Visit $visit)
+    /**
+     * Update the specified visit in storage.
+     */
+    public function update(UpdateVisitRequest $request, Visit $visit): RedirectResponse
     {
-        $visit->update($request->validated());
+        $data = $request->validated();
+
+        // Map notes -> clinical_notes
+        if (array_key_exists('notes', $data)) {
+            $data['clinical_notes'] = $data['notes'];
+            unset($data['notes']);
+        }
+
+        $visit->update($data);
 
         return redirect()
-            ->route('admin.visits.show', $visit)
+            ->route('admin.visits.show', ['visit' => $visit->id])
             ->with('success', 'Visit updated successfully.');
     }
 
-    public function destroy(Visit $visit)
+    /**
+     * Remove the specified visit from storage.
+     */
+    public function destroy(Visit $visit): RedirectResponse
     {
         $visit->delete();
 

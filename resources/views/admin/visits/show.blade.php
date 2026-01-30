@@ -21,7 +21,10 @@
             <div class="card-body">
                 <div class="mb-2 text-muted small">Patient</div>
                 <div class="fw-bold h5 mb-1">{{ $patient?->first_name }} {{ $patient?->last_name }}</div>
-                <div class="text-muted small">{{ $patient?->phone }} @if($patient?->email) • {{ $patient->email }} @endif</div>
+                <div class="text-muted small">
+                    {{ $patient?->phone }}
+                    @if($patient?->email) • {{ $patient->email }} @endif
+                </div>
 
                 <hr>
 
@@ -36,17 +39,21 @@
                     </div>
                     <div class="col-12">
                         <div class="text-muted small">Notes</div>
-                        <div class="fw-semibold">{{ $visit->notes ?? '—' }}</div>
+                        <div class="fw-semibold">{{ $visit->clinical_notes ?? '—' }}</div>
                     </div>
                 </div>
 
                 <div class="mt-4 d-flex flex-wrap gap-2">
-                    <a class="btn btn-outline-secondary" href="{{ route('admin.visits.edit', $visit) }}">
+                    <a class="btn btn-outline-secondary" href="{{ route('admin.visits.edit', ['visit' => $visit->id]) }}">
                         <i class="fa-solid fa-pen-to-square me-1"></i>Edit Visit
                     </a>
-                    <a class="btn btn-outline-secondary" href="{{ route('admin.patients.show', $patient) }}">
-                        <i class="fa-solid fa-user me-1"></i>Patient
-                    </a>
+
+                    @if($patient)
+                        <a class="btn btn-outline-secondary" href="{{ route('admin.patients.show', ['patient' => $patient->id]) }}">
+                            <i class="fa-solid fa-user me-1"></i>Patient
+                        </a>
+                    @endif
+
                     <a class="btn btn-outline-secondary" href="{{ route('admin.visits.index') }}">
                         <i class="fa-solid fa-arrow-left me-1"></i>Back
                     </a>
@@ -62,14 +69,17 @@
             </div>
 
             <div class="card-body">
-                <form method="POST" action="{{ route('admin.visits.imaging-services.store', $visit) }}">
+                <form method="POST" action="{{ route('admin.visits.imaging-services.store', ['visit' => $visit->id]) }}">
                     @csrf
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Service</label>
                         <select class="form-select" name="service_id" required>
                             <option value="">Select service...</option>
                             @foreach($services as $s)
-                                <option value="{{ $s->id }}">{{ $s->name }} • KES {{ number_format($s->price ?? 0) }}</option>
+                                <option value="{{ $s->id }}" @selected(old('service_id') == $s->id)>
+                                    {{ $s->name }} • KES {{ number_format($s->price ?? 0) }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -126,18 +136,19 @@
                                     @endif
                                 </td>
                                 <td class="text-end">
-                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.imaging-services.show', $img) }}">
+                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.imaging-services.show', ['imaging_service' => $img->id]) }}">
                                         <i class="fa-solid fa-eye me-1"></i>Open
                                     </a>
-                                    @if(!$img->report)
-                                        <a class="btn btn-sm btn-outline-success"
-                                           href="{{ route('admin.reports.create.for-imaging-service', $img) }}">
-                                            <i class="fa-solid fa-file-circle-plus me-1"></i>Create Report
+
+                                    @if($img->report)
+                                        <a class="btn btn-sm btn-outline-secondary"
+                                           href="{{ route('admin.radiology-reports.show', ['radiology_report' => $img->report->id]) }}">
+                                            <i class="fa-solid fa-file-medical me-1"></i>View Report
                                         </a>
                                     @else
-                                        <a class="btn btn-sm btn-outline-secondary"
-                                           href="{{ route('admin.reports.show', $img->report) }}">
-                                            <i class="fa-solid fa-file-medical me-1"></i>View Report
+                                        <a class="btn btn-sm btn-outline-success"
+                                           href="{{ route('admin.radiology-reports.create', ['imaging_service_id' => $img->id]) }}">
+                                            <i class="fa-solid fa-file-circle-plus me-1"></i>Create Report
                                         </a>
                                     @endif
                                 </td>
