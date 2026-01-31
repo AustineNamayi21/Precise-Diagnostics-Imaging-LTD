@@ -3,12 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| CONTROLLERS
-|--------------------------------------------------------------------------
-*/
-
 // Public (website) controllers
 use App\Http\Controllers\Web\AppointmentController as PublicAppointmentController;
 
@@ -21,12 +15,20 @@ use App\Http\Controllers\Admin\RadiologyReportController;
 use App\Http\Controllers\Admin\ReportDeliveryController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Http\Controllers\Admin\FinanceController;
+
+// Finance/Billing controllers
+use App\Http\Controllers\Admin\BillingController;
+use App\Http\Controllers\Admin\InvoicePaymentController;
+
+// Notices
+use App\Http\Controllers\Admin\NoticeController;
+
 use App\Http\Controllers\DashboardController;
 
 /*
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------|
 | PUBLIC WEBSITE ROUTES (NO AUTH REQUIRED)
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------|
 */
 Route::view('/', 'web.home')->name('home');
 Route::view('/about', 'web.about')->name('about');
@@ -40,18 +42,16 @@ Route::view('/sitemap', 'sitemap')->name('sitemap');
 Route::view('/careers', 'careers')->name('careers');
 
 /*
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------|
 | AUTHENTICATION ROUTES
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------|
 */
 Auth::routes();
 
 /*
-|--------------------------------------------------------------------------
-| ✅ AUTH REDIRECT TARGETS (PREVENT 404 AFTER LOGIN)
-|--------------------------------------------------------------------------
-| Laravel auth commonly redirects to /home or /dashboard after login.
-| Your real admin dashboard is /admin/dashboard.
+|--------------------------------------------------------------------------|
+| AUTH REDIRECT TARGETS
+|--------------------------------------------------------------------------|
 */
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
@@ -62,23 +62,18 @@ Route::get('/home', function () {
 })->middleware('auth')->name('home.redirect');
 
 /*
-|--------------------------------------------------------------------------
-| PUBLIC APPOINTMENT BOOKING (PATIENT SIDE)
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------|
+| PUBLIC APPOINTMENT BOOKING
+|--------------------------------------------------------------------------|
 */
-Route::get('/appointments', [PublicAppointmentController::class, 'book'])
-    ->name('appointments');
-
-Route::post('/appointments', [PublicAppointmentController::class, 'storeWeb'])
-    ->name('appointments.store');
-
-Route::get('/appointments/success', [PublicAppointmentController::class, 'success'])
-    ->name('appointments.success');
+Route::get('/appointments', [PublicAppointmentController::class, 'book'])->name('appointments');
+Route::post('/appointments', [PublicAppointmentController::class, 'storeWeb'])->name('appointments.store');
+Route::get('/appointments/success', [PublicAppointmentController::class, 'success'])->name('appointments.success');
 
 /*
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------|
 | ADMIN ROUTES (AUTH PROTECTED)
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------|
 */
 Route::prefix('admin')
     ->middleware(['auth'])
@@ -89,18 +84,20 @@ Route::prefix('admin')
             return redirect()->route('admin.dashboard');
         })->name('home');
 
-        Route::get('/dashboard', [DashboardController::class, 'index'])
-            ->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Editable Notices
+        Route::resource('notices', NoticeController::class)->only(['index','store','update','destroy']);
 
         Route::resource('patients', PatientController::class);
         Route::resource('services', ServiceController::class);
         Route::resource('visits', VisitController::class);
 
-        /*
-        |--------------------------------------------------------------------------
-        | ✅ NESTED: Attach imaging services to a visit
-        |--------------------------------------------------------------------------
-        */
+        // Billing
+        Route::post('visits/{visit}/billing/sync', [BillingController::class, 'sync'])->name('billing.sync');
+        Route::post('invoices/{invoice}/payments', [InvoicePaymentController::class, 'store'])->name('invoices.payments.store');
+
+        // Attach imaging services to visit
         Route::prefix('visits/{visit}')->group(function () {
             Route::post('imaging-services', [ImagingServiceController::class, 'storeForVisit'])
                 ->name('visits.imaging-services.store');
@@ -109,78 +106,24 @@ Route::prefix('admin')
                 ->name('visits.imaging-services.destroy');
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | Imaging Services (resource)
-        |--------------------------------------------------------------------------
-        */
         Route::resource('imaging-services', ImagingServiceController::class);
 
-        /*
-        |--------------------------------------------------------------------------
-        | ✅ FIX: Missing route used by imaging-services/show.blade.php
-        |--------------------------------------------------------------------------
-        */
         Route::patch('imaging-services/{imaging_service}/status', [ImagingServiceController::class, 'updateStatus'])
             ->name('imaging-services.update-status');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Radiology Reports
-        |--------------------------------------------------------------------------
-        */
         Route::resource('radiology-reports', RadiologyReportController::class);
 
-        /*
-        |--------------------------------------------------------------------------
-        | ✅ SEND FINAL REPORT TO PATIENT (EMAIL)
-        |--------------------------------------------------------------------------
-        */
         Route::post('radiology-reports/{radiologyReport}/send', [ReportDeliveryController::class, 'send'])
             ->name('radiology-reports.send');
 
-        /*
-        |--------------------------------------------------------------------------
-        | ✅ Report Deliveries (ONLY PAGES YOU SUPPORT)
-        |--------------------------------------------------------------------------
-        */
         Route::resource('report-deliveries', ReportDeliveryController::class)->only(['index', 'show']);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Appointments (admin side)
-        |--------------------------------------------------------------------------
-        */
         Route::resource('appointments', AdminAppointmentController::class);
 
-        /*
-        |--------------------------------------------------------------------------
-        | ✅ Finance (FIXED TO MATCH YOUR FinanceController)
-        |--------------------------------------------------------------------------
-        */
-        // /admin/finance -> FinanceController@dashboard
-        Route::get('/finance', [FinanceController::class, 'dashboard'])
-            ->name('finance.index');
-
-        // Optional: Daily/Weekly/Monthly/Yearly Reports (you already have these methods)
-        Route::get('/finance/reports/daily', [FinanceController::class, 'daily'])
-            ->name('finance.reports.daily');
-
-        Route::get('/finance/reports/weekly', [FinanceController::class, 'weekly'])
-            ->name('finance.reports.weekly');
-
-        Route::get('/finance/reports/monthly', [FinanceController::class, 'monthly'])
-            ->name('finance.reports.monthly');
-
-        Route::get('/finance/reports/yearly', [FinanceController::class, 'yearly'])
-            ->name('finance.reports.yearly');
+        // Finance
+        Route::get('/finance', [FinanceController::class, 'dashboard'])->name('finance.index');
+        Route::get('/finance/reports/daily', [FinanceController::class, 'daily'])->name('finance.reports.daily');
+        Route::get('/finance/reports/weekly', [FinanceController::class, 'weekly'])->name('finance.reports.weekly');
+        Route::get('/finance/reports/monthly', [FinanceController::class, 'monthly'])->name('finance.reports.monthly');
+        Route::get('/finance/reports/yearly', [FinanceController::class, 'yearly'])->name('finance.reports.yearly');
     });
-
-/*
-|--------------------------------------------------------------------------
-| OPTIONAL CUSTOM 404
-|--------------------------------------------------------------------------
-*/
-// Route::fallback(function () {
-//     return response()->view('errors.404', [], 404);
-// });

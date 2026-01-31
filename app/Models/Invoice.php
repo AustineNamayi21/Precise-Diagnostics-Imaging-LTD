@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Invoice extends Model
 {
@@ -21,26 +21,11 @@ class Invoice extends Model
     ];
 
     protected $casts = [
+        'issued_at' => 'datetime',
         'subtotal' => 'decimal:2',
         'discount' => 'decimal:2',
         'total' => 'decimal:2',
-        'issued_at' => 'datetime',
     ];
-
-    public function visit(): BelongsTo
-    {
-        return $this->belongsTo(Visit::class);
-    }
-
-    public function patient(): BelongsTo
-    {
-        return $this->belongsTo(Patient::class);
-    }
-
-    public function issuer(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'issued_by');
-    }
 
     public function items(): HasMany
     {
@@ -52,13 +37,18 @@ class Invoice extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function getAmountPaidAttribute(): float
+    public function patient(): BelongsTo
     {
-        return (float) $this->payments()->sum('amount');
+        return $this->belongsTo(Patient::class);
     }
 
-    public function getBalanceAttribute(): float
+    public function visit(): BelongsTo
     {
-        return (float) $this->total - (float) $this->amount_paid;
+        return $this->belongsTo(Visit::class);
+    }
+
+    public function issuer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'issued_by');
     }
 }

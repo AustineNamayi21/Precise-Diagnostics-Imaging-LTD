@@ -19,7 +19,9 @@ class VisitController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Visit::query()->with(['patient'])->latest();
+        $query = Visit::query()
+            ->with(['patient'])
+            ->latest();
 
         // ✅ Allow filtering by patient (used by patient show page "View all")
         if ($request->filled('patient_id')) {
@@ -55,18 +57,18 @@ class VisitController extends Controller
     {
         $data = $request->validated();
 
-        // Map notes -> clinical_notes if your DB uses clinical_notes
+        // ✅ Map notes -> clinical_notes (DB consistency)
         if (array_key_exists('notes', $data)) {
             $data['clinical_notes'] = $data['notes'];
             unset($data['notes']);
         }
 
-        // Track creator (if column exists)
+        // ✅ Track creator (safe even if column is nullable)
         $data['created_by'] = auth()->id();
 
         $visit = Visit::create($data);
 
-        // ✅ If visit was created while viewing a patient, go back to that patient
+        // ✅ Redirect back to patient if visit was created from patient page
         if (!empty($visit->patient_id)) {
             return redirect()
                 ->route('admin.patients.show', ['patient' => $visit->patient_id])
@@ -80,12 +82,24 @@ class VisitController extends Controller
 
     /**
      * Display the specified visit.
+     * 
+     * 🔥 FINANCE-READY
+     * - Loads invoice
+     * - Loads invoice items
+     * - Loads payments + cashier
      */
     public function show(Visit $visit): View
     {
-        $visit->load(['patient', 'imagingServices.service']);
+        $visit->load([
+            'patient',
+            'imagingServices.service',
 
-        // Only fetch active services
+            // ✅ Finance relations (safe if null)
+            'invoice.items',
+            'invoice.payments.receiver',
+        ]);
+
+        // ✅ Only fetch active services for adding imaging
         $services = Service::query()
             ->where('is_active', true)
             ->orderBy('modality')
@@ -115,7 +129,7 @@ class VisitController extends Controller
     {
         $data = $request->validated();
 
-        // Map notes -> clinical_notes
+        // ✅ Map notes -> clinical_notes
         if (array_key_exists('notes', $data)) {
             $data['clinical_notes'] = $data['notes'];
             unset($data['notes']);

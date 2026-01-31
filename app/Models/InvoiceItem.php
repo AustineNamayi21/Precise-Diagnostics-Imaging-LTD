@@ -17,7 +17,7 @@ class InvoiceItem extends Model
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
+        'quantity'   => 'integer',
         'unit_price' => 'decimal:2',
         'line_total' => 'decimal:2',
     ];
@@ -25,10 +25,5 @@ class InvoiceItem extends Model
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
-    }
-
-    public function imagingService(): BelongsTo
-    {
-        return $this->belongsTo(ImagingService::class);
     }
 }
