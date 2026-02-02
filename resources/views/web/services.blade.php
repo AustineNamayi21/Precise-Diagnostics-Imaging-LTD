@@ -6,51 +6,59 @@
 @section('content')
 
 <!-- HERO -->
-<section class="medical-gradient text-white relative overflow-hidden py-20">
+<section class="relative overflow-hidden text-white">
+    <div class="absolute inset-0 services-hero-bg"></div>
+    <div class="absolute inset-0 opacity-[0.10] hero-grid"></div>
+
     <!-- Decorative bubbles -->
     <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="absolute top-20 right-10 w-52 h-52 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="absolute bottom-10 left-1/3 w-44 h-44 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-2xl animate-float-slow"></div>
+        <div class="absolute top-20 right-10 w-52 h-52 bg-white/10 rounded-full blur-2xl animate-float"></div>
+        <div class="absolute bottom-10 left-1/3 w-44 h-44 bg-white/10 rounded-full blur-2xl animate-pulse-soft"></div>
     </div>
 
-    <div class="container mx-auto px-6 relative z-10">
-        <div class="max-w-4xl mx-auto text-center reveal">
-            <h1 class="font-heading text-5xl md:text-6xl font-extrabold mb-6">
+    <div class="container mx-auto px-6 relative z-10 py-20">
+        <div class="max-w-4xl mx-auto text-center reveal" data-reveal="up">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 backdrop-blur-md mb-6">
+                <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                <span class="text-sm font-semibold tracking-wide text-white/90">Find the right scan • Book in minutes</span>
+            </div>
+
+            <h1 class="font-heading text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
                 Advanced Diagnostic Imaging
             </h1>
-            <p class="text-xl mb-10 text-white/90">
+            <p class="text-xl mb-10 text-white/90 leading-relaxed drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
                 State-of-the-art imaging technology with precision, clarity, and expert interpretation for accurate diagnoses.
             </p>
 
             <!-- Smart Guide -->
-            <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-6 md:p-8 shadow-xl">
+            <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-6 md:p-8 shadow-2xl">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div class="text-left">
                         <h2 class="text-2xl md:text-3xl font-extrabold">
                             <i class="fas fa-search-medical mr-2"></i> Find Your Scan
                         </h2>
                         <p class="text-white/90 mt-2">
-                            Not sure which scan you need? Explore recommendations and compare options.
+                            Not sure which scan you need? Use the body map or compare scans to decide quickly.
                         </p>
                     </div>
 
                     <a href="{{ route('appointments') }}"
-                       class="bg-white text-blue-900 px-6 py-3 rounded-xl font-extrabold hover:bg-gray-100 transition inline-flex items-center justify-center shadow-lg">
+                       class="btn-primary inline-flex items-center justify-center px-6 py-3 rounded-xl font-extrabold shadow-lg">
                         <i class="fas fa-calendar-check mr-2"></i> Book Appointment
                     </a>
                 </div>
 
                 <!-- Tabs -->
-                <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center" role="tablist" aria-label="Scan guide tabs">
                     <button type="button"
-                            class="scan-tab bg-white/15 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-xl font-bold transition inline-flex items-center justify-center"
-                            data-tab="bodymap">
+                            class="scan-tab is-active px-5 py-3 rounded-xl font-bold transition inline-flex items-center justify-center"
+                            data-tab="bodymap" role="tab" aria-selected="true">
                         <i class="fas fa-user-md mr-2"></i> Interactive Body Map
                     </button>
                     <button type="button"
-                            class="scan-tab bg-transparent border border-white/15 hover:bg-white/10 px-5 py-3 rounded-xl font-bold transition inline-flex items-center justify-center"
-                            data-tab="compare">
+                            class="scan-tab px-5 py-3 rounded-xl font-bold transition inline-flex items-center justify-center"
+                            data-tab="compare" role="tab" aria-selected="false">
                         <i class="fas fa-balance-scale mr-2"></i> Compare Scans
                     </button>
                 </div>
@@ -64,7 +72,7 @@
     <div class="container mx-auto px-6">
 
         <!-- Body Map Panel -->
-        <div id="tab-bodymap" class="reveal">
+        <div id="tab-bodymap" class="reveal" data-reveal="up">
             <div class="text-center mb-10">
                 <h2 class="font-heading text-4xl font-extrabold text-slate-900">Interactive Body Map</h2>
                 <p class="text-slate-600 mt-2 max-w-2xl mx-auto">
@@ -110,9 +118,7 @@
                     </div>
 
                     <div class="mt-6 bg-blue-50 border border-blue-100 rounded-2xl p-5 text-slate-700">
-                        <div class="font-extrabold text-slate-900 mb-1">
-                            Tip
-                        </div>
+                        <div class="font-extrabold text-slate-900 mb-1">Tip</div>
                         If you already have a doctor’s request, you can skip this and book directly.
                     </div>
                 </div>
@@ -129,7 +135,7 @@
         </div>
 
         <!-- Compare Panel -->
-        <div id="tab-compare" class="hidden reveal">
+        <div id="tab-compare" class="hidden reveal" data-reveal="up">
             <div class="text-center mb-10">
                 <h2 class="font-heading text-4xl font-extrabold text-slate-900">Compare Scans</h2>
                 <p class="text-slate-600 mt-2 max-w-2xl mx-auto">
@@ -138,7 +144,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-3xl p-7 shadow-xl border border-slate-100">
+                <div class="compare-card">
                     <div class="text-3xl mb-3 text-blue-600"><i class="fas fa-mri"></i></div>
                     <h3 class="text-xl font-extrabold text-slate-900 mb-2">MRI</h3>
                     <ul class="text-slate-700 space-y-2">
@@ -148,7 +154,7 @@
                     </ul>
                 </div>
 
-                <div class="bg-white rounded-3xl p-7 shadow-xl border border-slate-100">
+                <div class="compare-card">
                     <div class="text-3xl mb-3 text-teal-600"><i class="fas fa-ct-scan"></i></div>
                     <h3 class="text-xl font-extrabold text-slate-900 mb-2">CT</h3>
                     <ul class="text-slate-700 space-y-2">
@@ -158,7 +164,7 @@
                     </ul>
                 </div>
 
-                <div class="bg-white rounded-3xl p-7 shadow-xl border border-slate-100">
+                <div class="compare-card">
                     <div class="text-3xl mb-3 text-indigo-600"><i class="fas fa-ultrasound"></i></div>
                     <h3 class="text-xl font-extrabold text-slate-900 mb-2">Ultrasound</h3>
                     <ul class="text-slate-700 space-y-2">
@@ -189,28 +195,48 @@
 <!-- ALL SERVICES -->
 <section class="py-20 bg-white">
     <div class="container mx-auto px-6">
-        <div class="text-center mb-12 reveal">
+        <div class="text-center mb-10 reveal" data-reveal="up">
             <h2 class="font-heading text-4xl font-extrabold text-slate-900">Our Comprehensive Imaging Services</h2>
             <p class="text-slate-600 max-w-3xl mx-auto mt-2">
                 Advanced technology, expert radiologists, and compassionate care for accurate diagnoses.
             </p>
         </div>
 
-        <!-- Category Filter -->
-        <div class="flex flex-wrap justify-center gap-3 mb-10 reveal">
-            <button class="category-filter active" data-category="all" type="button">All Services</button>
-            <button class="category-filter" data-category="neurological" type="button">Neurological</button>
-            <button class="category-filter" data-category="cardiac" type="button">Cardiac</button>
-            <button class="category-filter" data-category="musculoskeletal" type="button">Musculoskeletal</button>
-            <button class="category-filter" data-category="abdominal" type="button">Abdominal</button>
-            <button class="category-filter" data-category="general" type="button">General Imaging</button>
+        <!-- Search + Filter -->
+        <div class="max-w-4xl mx-auto mb-10 reveal" data-reveal="up">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <div class="md:col-span-1">
+                    <label class="block text-slate-700 font-extrabold mb-2">Search services</label>
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="serviceSearch" type="text"
+                               placeholder="Type e.g. MRI, CT, X-Ray..."
+                               class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-100">
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-slate-700 font-extrabold mb-2">Filter by category</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="category-filter active" data-category="all" type="button">All Services</button>
+                        <button class="category-filter" data-category="neurological" type="button">Neurological</button>
+                        <button class="category-filter" data-category="cardiac" type="button">Cardiac</button>
+                        <button class="category-filter" data-category="musculoskeletal" type="button">Musculoskeletal</button>
+                        <button class="category-filter" data-category="abdominal" type="button">Abdominal</button>
+                        <button class="category-filter" data-category="general" type="button">General Imaging</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultsMeta" class="mt-4 text-sm text-slate-500 font-semibold"></div>
         </div>
 
         <!-- Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            <!-- MRI -->
-            <div class="service-card reveal" data-categories="neurological musculoskeletal abdominal">
+            {{-- NOTE: your existing service cards continue below unchanged content-wise --}}
+            {{-- MRI --}}
+            <div class="service-card reveal" data-reveal="up" data-title="MRI Scanning" data-categories="neurological musculoskeletal abdominal">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
@@ -229,15 +255,9 @@
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-clock mr-2 text-blue-600"></i> 30–60 mins
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-radiation mr-2 text-green-600"></i> No radiation
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-cube mr-2 text-purple-600"></i> 3D imaging
-                    </span>
+                    <span class="pill"><i class="fas fa-clock mr-2 text-blue-600"></i> 30–60 mins</span>
+                    <span class="pill"><i class="fas fa-radiation mr-2 text-green-600"></i> No radiation</span>
+                    <span class="pill"><i class="fas fa-cube mr-2 text-purple-600"></i> 3D imaging</span>
                 </div>
 
                 <div class="mt-6 flex items-center justify-between">
@@ -245,7 +265,7 @@
                         <div class="text-slate-500 text-sm font-semibold">Estimated range</div>
                         <div class="text-blue-700 font-extrabold text-xl">KES 15,000 – 45,000</div>
                     </div>
-                    <div class="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-full text-sm font-extrabold">
+                    <div class="badge-insurance">
                         <i class="fas fa-shield-alt mr-1"></i> Insurance
                     </div>
                 </div>
@@ -270,8 +290,8 @@
                 </div>
             </div>
 
-            <!-- MR Spectroscopy -->
-            <div class="service-card reveal" data-categories="neurological">
+            {{-- MR Spectroscopy --}}
+            <div class="service-card reveal" data-reveal="up" data-title="MR Spectroscopy" data-categories="neurological">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center">
@@ -289,12 +309,8 @@
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-clock mr-2 text-blue-600"></i> 45–75 mins
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-atom mr-2 text-purple-600"></i> Brain chemistry
-                    </span>
+                    <span class="pill"><i class="fas fa-clock mr-2 text-blue-600"></i> 45–75 mins</span>
+                    <span class="pill"><i class="fas fa-atom mr-2 text-purple-600"></i> Brain chemistry</span>
                 </div>
 
                 <div class="mt-6 flex items-center justify-between">
@@ -302,7 +318,7 @@
                         <div class="text-slate-500 text-sm font-semibold">Estimated range</div>
                         <div class="text-purple-700 font-extrabold text-xl">KES 25,000 – 35,000</div>
                     </div>
-                    <div class="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-full text-sm font-extrabold">
+                    <div class="badge-insurance">
                         <i class="fas fa-shield-alt mr-1"></i> Insurance
                     </div>
                 </div>
@@ -319,8 +335,8 @@
                 </div>
             </div>
 
-            <!-- CT -->
-            <div class="service-card reveal" data-categories="neurological cardiac abdominal musculoskeletal general">
+            {{-- CT --}}
+            <div class="service-card reveal" data-reveal="up" data-title="CT Scanning" data-categories="neurological cardiac abdominal musculoskeletal general">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-teal-50 flex items-center justify-center">
@@ -339,15 +355,9 @@
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-clock mr-2 text-blue-600"></i> 10–30 mins
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-bolt mr-2 text-yellow-600"></i> 128-slice
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-cube mr-2 text-red-600"></i> 3D
-                    </span>
+                    <span class="pill"><i class="fas fa-clock mr-2 text-blue-600"></i> 10–30 mins</span>
+                    <span class="pill"><i class="fas fa-bolt mr-2 text-yellow-600"></i> 128-slice</span>
+                    <span class="pill"><i class="fas fa-cube mr-2 text-red-600"></i> 3D</span>
                 </div>
 
                 <div class="mt-6 flex items-center justify-between">
@@ -355,7 +365,7 @@
                         <div class="text-slate-500 text-sm font-semibold">Estimated range</div>
                         <div class="text-teal-700 font-extrabold text-xl">KES 8,000 – 25,000</div>
                     </div>
-                    <div class="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-full text-sm font-extrabold">
+                    <div class="badge-insurance">
                         <i class="fas fa-shield-alt mr-1"></i> Insurance
                     </div>
                 </div>
@@ -380,8 +390,8 @@
                 </div>
             </div>
 
-            <!-- Ultrasound -->
-            <div class="service-card reveal" data-categories="abdominal cardiac general">
+            {{-- Ultrasound --}}
+            <div class="service-card reveal" data-reveal="up" data-title="Ultrasound Scan" data-categories="abdominal cardiac general">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
@@ -399,15 +409,9 @@
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-clock mr-2 text-blue-600"></i> 15–45 mins
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-baby mr-2 text-pink-600"></i> Pregnancy safe
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-video mr-2 text-green-600"></i> Live imaging
-                    </span>
+                    <span class="pill"><i class="fas fa-clock mr-2 text-blue-600"></i> 15–45 mins</span>
+                    <span class="pill"><i class="fas fa-baby mr-2 text-pink-600"></i> Pregnancy safe</span>
+                    <span class="pill"><i class="fas fa-video mr-2 text-green-600"></i> Live imaging</span>
                 </div>
 
                 <div class="mt-6 flex items-center justify-between">
@@ -415,7 +419,7 @@
                         <div class="text-slate-500 text-sm font-semibold">Estimated range</div>
                         <div class="text-blue-700 font-extrabold text-xl">KES 5,000 – 15,000</div>
                     </div>
-                    <div class="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-full text-sm font-extrabold">
+                    <div class="badge-insurance">
                         <i class="fas fa-shield-alt mr-1"></i> Insurance
                     </div>
                 </div>
@@ -432,8 +436,8 @@
                 </div>
             </div>
 
-            <!-- Fluoroscopy -->
-            <div class="service-card reveal" data-categories="general">
+            {{-- Fluoroscopy --}}
+            <div class="service-card reveal" data-reveal="up" data-title="Fluoroscopy" data-categories="general">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center">
@@ -451,12 +455,8 @@
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-clock mr-2 text-blue-600"></i> 20–60 mins
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-film mr-2 text-red-600"></i> Real-time
-                    </span>
+                    <span class="pill"><i class="fas fa-clock mr-2 text-blue-600"></i> 20–60 mins</span>
+                    <span class="pill"><i class="fas fa-film mr-2 text-red-600"></i> Real-time</span>
                 </div>
 
                 <div class="mt-6 flex items-center justify-between">
@@ -478,8 +478,8 @@
                 </div>
             </div>
 
-            <!-- ECG -->
-            <div class="service-card reveal" data-categories="cardiac general">
+            {{-- ECG --}}
+            <div class="service-card reveal" data-reveal="up" data-title="ECG Scan" data-categories="cardiac general">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center">
@@ -497,12 +497,8 @@
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-clock mr-2 text-blue-600"></i> 5–10 mins
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-bolt mr-2 text-yellow-600"></i> Immediate
-                    </span>
+                    <span class="pill"><i class="fas fa-clock mr-2 text-blue-600"></i> 5–10 mins</span>
+                    <span class="pill"><i class="fas fa-bolt mr-2 text-yellow-600"></i> Immediate</span>
                 </div>
 
                 <div class="mt-6 flex items-center justify-between">
@@ -510,7 +506,7 @@
                         <div class="text-slate-500 text-sm font-semibold">Estimated range</div>
                         <div class="text-green-700 font-extrabold text-xl">KES 3,000 – 5,000</div>
                     </div>
-                    <div class="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-full text-sm font-extrabold">
+                    <div class="badge-insurance">
                         <i class="fas fa-shield-alt mr-1"></i> Insurance
                     </div>
                 </div>
@@ -535,8 +531,8 @@
                 </div>
             </div>
 
-            <!-- X-Ray -->
-            <div class="service-card reveal" data-categories="musculoskeletal general">
+            {{-- X-Ray --}}
+            <div class="service-card reveal" data-reveal="up" data-title="General X-Ray" data-categories="musculoskeletal general">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center">
@@ -554,12 +550,8 @@
                 </p>
 
                 <div class="mt-5 flex flex-wrap gap-2">
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-clock mr-2 text-blue-600"></i> 5–15 mins
-                    </span>
-                    <span class="text-sm bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
-                        <i class="fas fa-image mr-2 text-slate-600"></i> Digital
-                    </span>
+                    <span class="pill"><i class="fas fa-clock mr-2 text-blue-600"></i> 5–15 mins</span>
+                    <span class="pill"><i class="fas fa-image mr-2 text-slate-600"></i> Digital</span>
                 </div>
 
                 <div class="mt-6 flex items-center justify-between">
@@ -567,7 +559,7 @@
                         <div class="text-slate-500 text-sm font-semibold">Estimated range</div>
                         <div class="text-slate-800 font-extrabold text-xl">KES 2,000 – 8,000</div>
                     </div>
-                    <div class="bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-full text-sm font-extrabold">
+                    <div class="badge-insurance">
                         <i class="fas fa-shield-alt mr-1"></i> Insurance
                     </div>
                 </div>
@@ -585,6 +577,12 @@
             </div>
 
         </div>
+
+        <div id="emptyState" class="hidden mt-10 bg-slate-50 border border-slate-200 rounded-3xl p-10 text-center">
+            <i class="fas fa-filter text-3xl text-slate-400 mb-4"></i>
+            <h3 class="text-xl font-extrabold text-slate-800">No matching services</h3>
+            <p class="text-slate-600 mt-1">Try a different category or search term.</p>
+        </div>
     </div>
 </section>
 
@@ -592,11 +590,11 @@
 <section class="py-16 bg-slate-50">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-            <div class="reveal">
+            <div class="reveal" data-reveal="up">
                 <h2 class="font-heading text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">Insurance & Payment</h2>
 
                 <div class="space-y-6">
-                    <div class="bg-white rounded-3xl p-6 shadow-lg border border-slate-100">
+                    <div class="info-card">
                         <div class="flex items-start gap-4">
                             <div class="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center">
                                 <i class="fas fa-shield-alt text-green-600 text-2xl"></i>
@@ -610,7 +608,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-3xl p-6 shadow-lg border border-slate-100">
+                    <div class="info-card">
                         <div class="flex items-start gap-4">
                             <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
                                 <i class="fas fa-credit-card text-blue-600 text-2xl"></i>
@@ -624,7 +622,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-3xl p-6 shadow-lg border border-slate-100">
+                    <div class="info-card">
                         <div class="flex items-start gap-4">
                             <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center">
                                 <i class="fas fa-file-medical text-indigo-600 text-2xl"></i>
@@ -640,7 +638,7 @@
                 </div>
             </div>
 
-            <div class="reveal bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
+            <div class="reveal bg-white rounded-3xl p-8 shadow-xl border border-slate-100" data-reveal="up">
                 <h3 class="text-2xl font-extrabold text-slate-900 mb-2">Instant Quote Request</h3>
                 <p class="text-slate-600 mb-6">Pick a service and we’ll guide you to booking.</p>
 
@@ -692,15 +690,18 @@
 </section>
 
 <!-- CTA -->
-<section class="medical-gradient text-white py-20">
-    <div class="container mx-auto px-6 text-center reveal">
+<section class="relative overflow-hidden text-white py-20">
+    <div class="absolute inset-0 services-cta-bg"></div>
+    <div class="absolute inset-0 opacity-[0.10] hero-grid"></div>
+
+    <div class="container mx-auto px-6 text-center reveal relative z-10" data-reveal="up">
         <h2 class="font-heading text-4xl font-extrabold mb-6">Ready for Your Diagnostic Scan?</h2>
         <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
             Book your appointment online or speak with our imaging specialists for guidance.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{{ route('appointments') }}"
-               class="bg-white text-blue-900 px-8 py-4 rounded-xl font-extrabold hover:bg-gray-100 transition-all inline-flex items-center justify-center">
+               class="btn-primary px-8 py-4 rounded-xl font-extrabold inline-flex items-center justify-center shadow-2xl">
                 <i class="fas fa-calendar-alt mr-2"></i> Book Appointment Online
             </a>
             <a href="tel:+254207856359"
@@ -713,14 +714,16 @@
 
 <!-- DETAILS MODAL -->
 <div id="serviceModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl modal-pop">
         <div class="p-8">
             <div class="flex justify-between items-start gap-6 mb-6">
                 <div>
                     <h3 id="modalTitle" class="text-2xl md:text-3xl font-extrabold text-slate-900">Service Details</h3>
                     <p class="text-slate-600 mt-1">Useful info and prep guidance.</p>
                 </div>
-                <button id="closeModalBtn" type="button" class="text-slate-500 hover:text-slate-700 text-3xl leading-none">&times;</button>
+                <button id="closeModalBtn" type="button" class="w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 transition text-slate-600 text-2xl leading-none flex items-center justify-center" aria-label="Close">
+                    &times;
+                </button>
             </div>
 
             <div id="modalContent" class="prose max-w-none text-slate-700"></div>
@@ -744,45 +747,49 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Reveal animations (works with layouts/web.blade.php)
-    const revealEls = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                e.target.classList.add('is-visible');
-                io.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.12 });
-    revealEls.forEach(el => io.observe(el));
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Tabs (Body Map / Compare)
+    // Reveal animations (safe even if layout also has it)
+    const revealEls = document.querySelectorAll('.reveal');
+    if (!prefersReduced) {
+        revealEls.forEach((el, i) => { el.style.transitionDelay = `${Math.min(i * 55, 260)}ms`; });
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('is-visible');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        revealEls.forEach(el => io.observe(el));
+    } else {
+        revealEls.forEach(el => el.classList.add('is-visible'));
+    }
+
+    // Tabs
     const tabs = document.querySelectorAll('.scan-tab');
     const panels = {
         bodymap: document.getElementById('tab-bodymap'),
         compare: document.getElementById('tab-compare')
     };
 
-    tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const target = btn.dataset.tab;
-
-            tabs.forEach(b => {
-                b.classList.remove('bg-white/15');
-                b.classList.add('bg-transparent');
-            });
-            btn.classList.add('bg-white/15');
-            btn.classList.remove('bg-transparent');
-
-            Object.keys(panels).forEach(k => panels[k].classList.add('hidden'));
-            panels[target].classList.remove('hidden');
-
-            // smooth scroll to the panel on mobile
-            panels[target].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const setTab = (name) => {
+        tabs.forEach(t => {
+            const active = t.dataset.tab === name;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', active ? 'true' : 'false');
         });
-    });
+        Object.keys(panels).forEach(k => panels[k].classList.add('hidden'));
+        panels[name].classList.remove('hidden');
+        panels[name].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
-    // Body map recommendations (buttons)
+    tabs.forEach(btn => btn.addEventListener('click', () => setTab(btn.dataset.tab)));
+
+    // Body map recommendations
+    const bodyBtns = document.querySelectorAll('.body-btn');
+    const rec = document.getElementById('recommendedScans');
+
     const bodyPartServices = {
         head: [
             { key: 'mri', name: 'MRI Scanning', desc: 'Detailed brain imaging for neurological conditions', icon: 'fas fa-mri' },
@@ -806,73 +813,99 @@ document.addEventListener('DOMContentLoaded', () => {
         ],
     };
 
-    const rec = document.getElementById('recommendedScans');
-    document.querySelectorAll('.body-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const part = btn.dataset.part;
-            const list = bodyPartServices[part] || [];
+    const titleMap = { head: 'Head / Brain', chest: 'Chest / Heart', abdomen: 'Abdomen', limbs: 'Joints / Bones' };
 
-            const title = part.charAt(0).toUpperCase() + part.slice(1);
-            let html = `
-                <div class="bg-white rounded-3xl p-7 shadow-xl border border-slate-100">
-                    <h3 class="text-2xl font-extrabold text-slate-900 mb-2">Recommended for ${title}</h3>
-                    <p class="text-slate-600 mb-6">Tap a service to book or view details.</p>
-                    <div class="space-y-4">
-            `;
+    const renderRecs = (part) => {
+        const list = bodyPartServices[part] || [];
+        const title = titleMap[part] || part;
 
-            list.forEach(s => {
-                html += `
-                    <div class="border border-slate-200 rounded-2xl p-4 hover:shadow-md transition bg-white">
-                        <div class="flex items-start gap-3">
-                            <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center">
-                                <i class="${s.icon} text-blue-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="font-extrabold text-slate-900">${s.name}</div>
-                                <div class="text-sm text-slate-600">${s.desc}</div>
-                            </div>
+        let html = `
+            <div class="bg-white rounded-3xl p-7 shadow-xl border border-slate-100 rec-panel">
+                <h3 class="text-2xl font-extrabold text-slate-900 mb-2">Recommended for ${title}</h3>
+                <p class="text-slate-600 mb-6">Tap a service to book or view details.</p>
+                <div class="space-y-4">
+        `;
+
+        list.forEach(s => {
+            html += `
+                <div class="border border-slate-200 rounded-2xl p-4 hover:shadow-md transition bg-white">
+                    <div class="flex items-start gap-3">
+                        <div class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center">
+                            <i class="${s.icon} text-blue-600"></i>
                         </div>
-                        <div class="mt-3 grid grid-cols-2 gap-2">
-                            <a class="bg-blue-600 text-white py-2 rounded-xl font-extrabold hover:bg-blue-700 transition text-center"
-                               href="{{ route('appointments') }}?service=${encodeURIComponent(s.name)}">
-                               Book
-                            </a>
-                            <button type="button" data-details="${s.key}"
-                                class="border border-blue-600 text-blue-700 py-2 rounded-xl font-extrabold hover:bg-blue-50 transition">
-                                Details
-                            </button>
+                        <div class="flex-1">
+                            <div class="font-extrabold text-slate-900">${s.name}</div>
+                            <div class="text-sm text-slate-600">${s.desc}</div>
                         </div>
                     </div>
-                `;
-            });
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        <a class="bg-blue-600 text-white py-2 rounded-xl font-extrabold hover:bg-blue-700 transition text-center"
+                           href="{{ route('appointments') }}?service=${encodeURIComponent(s.name)}">
+                           Book
+                        </a>
+                        <button type="button" data-details="${s.key}"
+                            class="border border-blue-600 text-blue-700 py-2 rounded-xl font-extrabold hover:bg-blue-50 transition">
+                            Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
 
-            html += `</div></div>`;
-            rec.innerHTML = html;
+        html += `</div></div>`;
+        rec.innerHTML = html;
 
-            // Bind details buttons generated dynamically
-            rec.querySelectorAll('[data-details]').forEach(b => {
-                b.addEventListener('click', () => openDetails(b.dataset.details));
-            });
+        // bind
+        rec.querySelectorAll('[data-details]').forEach(b => b.addEventListener('click', () => openDetails(b.dataset.details)));
+    };
+
+    bodyBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            bodyBtns.forEach(b => b.classList.remove('is-selected'));
+            btn.classList.add('is-selected');
+            renderRecs(btn.dataset.part);
         });
     });
 
-    // Category filtering
+    // Category + search filtering
     const filterBtns = document.querySelectorAll('.category-filter');
-    const cards = document.querySelectorAll('.service-card');
+    const cards = Array.from(document.querySelectorAll('.service-card'));
+    const searchInput = document.getElementById('serviceSearch');
+    const resultsMeta = document.getElementById('resultsMeta');
+    const emptyState = document.getElementById('emptyState');
+
+    let activeCategory = 'all';
+
+    const applyFilters = () => {
+        const q = (searchInput?.value || '').trim().toLowerCase();
+        let visible = 0;
+
+        cards.forEach(card => {
+            const cats = (card.dataset.categories || '');
+            const title = (card.dataset.title || card.querySelector('.text-slate-900.font-extrabold')?.textContent || '').toLowerCase();
+            const matchesCategory = (activeCategory === 'all') || cats.includes(activeCategory);
+            const matchesSearch = !q || title.includes(q);
+
+            const show = matchesCategory && matchesSearch;
+            card.classList.toggle('hidden', !show);
+            if (show) visible++;
+        });
+
+        if (resultsMeta) resultsMeta.textContent = `${visible} service${visible === 1 ? '' : 's'} shown`;
+        if (emptyState) emptyState.classList.toggle('hidden', visible !== 0);
+    };
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
-            const cat = btn.dataset.category;
-            cards.forEach(card => {
-                const cats = (card.dataset.categories || '');
-                const show = (cat === 'all') || cats.includes(cat);
-                card.classList.toggle('hidden', !show);
-            });
+            activeCategory = btn.dataset.category;
+            applyFilters();
         });
     });
+
+    searchInput?.addEventListener('input', applyFilters);
+    applyFilters();
 
     // Details modal
     const modal = document.getElementById('serviceModal');
@@ -883,76 +916,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalBookLink = document.getElementById('modalBookLink');
 
     const details = {
-        mri: {
-            title: 'MRI Scanning',
-            body: `
-                <div class="space-y-4">
-                    <p><strong>What it is:</strong> MRI uses magnetic fields and radio waves to create detailed images (no radiation).</p>
-                    <p><strong>Best for:</strong> brain, spine, joints, soft tissues, certain abdominal assessments.</p>
-                    <p><strong>Preparation:</strong> remove metal objects; tell staff about implants; some abdominal scans may require fasting.</p>
-                </div>
-            `
-        },
-        mrs: {
-            title: 'MR Spectroscopy',
-            body: `
-                <div class="space-y-4">
-                    <p><strong>What it is:</strong> Specialized MRI technique that measures chemical changes in the brain.</p>
-                    <p><strong>Best for:</strong> evaluating tumors, metabolic disorders, and certain neurological conditions.</p>
-                    <p><strong>Preparation:</strong> same MRI safety rules (no metal; inform staff about implants).</p>
-                </div>
-            `
-        },
-        ct: {
-            title: 'CT Scanning',
-            body: `
-                <div class="space-y-4">
-                    <p><strong>What it is:</strong> CT uses X-rays to create cross-sectional images and 3D reconstructions.</p>
-                    <p><strong>Best for:</strong> trauma, lungs, abdomen, urgent checks, bone detail.</p>
-                    <p><strong>Preparation:</strong> you may need contrast; inform staff about allergies and kidney issues.</p>
-                </div>
-            `
-        },
-        ultrasound: {
-            title: 'Ultrasound Scan',
-            body: `
-                <div class="space-y-4">
-                    <p><strong>What it is:</strong> Uses sound waves to create live images (no radiation).</p>
-                    <p><strong>Best for:</strong> pregnancy, abdomen, soft tissues, some heart checks.</p>
-                    <p><strong>Preparation:</strong> some scans require a full bladder; others require fasting (you’ll be advised).</p>
-                </div>
-            `
-        },
-        fluoro: {
-            title: 'Fluoroscopy',
-            body: `
-                <div class="space-y-4">
-                    <p><strong>What it is:</strong> Real-time X-ray imaging to visualize movement and function.</p>
-                    <p><strong>Best for:</strong> swallowing studies, GI studies, catheter guidance and more.</p>
-                    <p><strong>Preparation:</strong> depends on the study; you’ll receive specific instructions.</p>
-                </div>
-            `
-        },
-        ecg: {
-            title: 'ECG Scan',
-            body: `
-                <div class="space-y-4">
-                    <p><strong>What it is:</strong> Records your heart’s electrical activity.</p>
-                    <p><strong>Best for:</strong> rhythm checks, chest discomfort triage, monitoring.</p>
-                    <p><strong>Preparation:</strong> no special prep; wear a top that allows chest access.</p>
-                </div>
-            `
-        },
-        xray: {
-            title: 'General X-Ray',
-            body: `
-                <div class="space-y-4">
-                    <p><strong>What it is:</strong> Fast imaging commonly used for bones, joints, and chest checks.</p>
-                    <p><strong>Best for:</strong> fractures, chest assessment, joint degeneration.</p>
-                    <p><strong>Preparation:</strong> remove jewelry/metal from the area being scanned.</p>
-                </div>
-            `
-        },
+        mri: { title: 'MRI Scanning', body: `
+            <div class="space-y-4">
+                <p><strong>What it is:</strong> MRI uses magnetic fields and radio waves to create detailed images (no radiation).</p>
+                <p><strong>Best for:</strong> brain, spine, joints, soft tissues, certain abdominal assessments.</p>
+                <p><strong>Preparation:</strong> remove metal objects; tell staff about implants; some scans may require fasting.</p>
+            </div>`},
+        mrs: { title: 'MR Spectroscopy', body: `
+            <div class="space-y-4">
+                <p><strong>What it is:</strong> Specialized MRI technique that measures chemical changes in the brain.</p>
+                <p><strong>Best for:</strong> evaluating tumors, metabolic disorders, and certain neurological conditions.</p>
+                <p><strong>Preparation:</strong> same MRI safety rules (no metal; inform staff about implants).</p>
+            </div>`},
+        ct: { title: 'CT Scanning', body: `
+            <div class="space-y-4">
+                <p><strong>What it is:</strong> CT uses X-rays to create cross-sectional images and 3D reconstructions.</p>
+                <p><strong>Best for:</strong> trauma, lungs, abdomen, urgent checks, bone detail.</p>
+                <p><strong>Preparation:</strong> you may need contrast; inform staff about allergies and kidney issues.</p>
+            </div>`},
+        ultrasound: { title: 'Ultrasound Scan', body: `
+            <div class="space-y-4">
+                <p><strong>What it is:</strong> Uses sound waves to create live images (no radiation).</p>
+                <p><strong>Best for:</strong> pregnancy, abdomen, soft tissues, some heart checks.</p>
+                <p><strong>Preparation:</strong> some scans require a full bladder; others require fasting (you’ll be advised).</p>
+            </div>`},
+        fluoro: { title: 'Fluoroscopy', body: `
+            <div class="space-y-4">
+                <p><strong>What it is:</strong> Real-time X-ray imaging to visualize movement and function.</p>
+                <p><strong>Best for:</strong> swallowing studies, GI studies, catheter guidance and more.</p>
+                <p><strong>Preparation:</strong> depends on the study; you’ll receive specific instructions.</p>
+            </div>`},
+        ecg: { title: 'ECG Scan', body: `
+            <div class="space-y-4">
+                <p><strong>What it is:</strong> Records your heart’s electrical activity.</p>
+                <p><strong>Best for:</strong> rhythm checks, chest discomfort triage, monitoring.</p>
+                <p><strong>Preparation:</strong> no special prep; wear a top that allows chest access.</p>
+            </div>`},
+        xray: { title: 'General X-Ray', body: `
+            <div class="space-y-4">
+                <p><strong>What it is:</strong> Fast imaging commonly used for bones, joints, and chest checks.</p>
+                <p><strong>Best for:</strong> fractures, chest assessment, joint degeneration.</p>
+                <p><strong>Preparation:</strong> remove jewelry/metal from the area being scanned.</p>
+            </div>`},
     };
 
     function openDetails(id){
@@ -961,8 +966,10 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTitle.textContent = d.title;
         modalContent.innerHTML = d.body;
         modalBookLink.href = `{{ route('appointments') }}?service=${encodeURIComponent(d.title)}`;
+
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        document.documentElement.style.overflow = 'hidden';
     }
 
     document.querySelectorAll('[data-details]').forEach(btn => {
@@ -972,12 +979,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = () => {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+        document.documentElement.style.overflow = '';
     };
 
     closeBtn?.addEventListener('click', closeModal);
     closeBtn2?.addEventListener('click', closeModal);
     modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
 
     // Quote
     const quoteBtn = document.getElementById('quoteBtn');
@@ -996,6 +1004,104 @@ document.addEventListener('DOMContentLoaded', () => {
 
 @push('styles')
 <style>
+@media (prefers-reduced-motion: reduce) {
+    .reveal, .animate-float, .animate-float-slow, .animate-pulse-soft { animation: none !important; transition: none !important; }
+}
+
+/* Hero background (matches Home/About vibe) */
+.services-hero-bg{
+    background: radial-gradient(1200px 600px at 20% 10%, rgba(56,189,248,.25), transparent 55%),
+                radial-gradient(900px 500px at 85% 20%, rgba(99,102,241,.18), transparent 55%),
+                linear-gradient(135deg, rgba(2,6,23,.95), rgba(30,64,175,.80), rgba(14,116,144,.78));
+}
+.services-cta-bg{
+    background: radial-gradient(900px 500px at 30% 20%, rgba(56,189,248,.20), transparent 60%),
+                linear-gradient(90deg, rgba(2,6,23,.92), rgba(30,64,175,.78), rgba(14,116,144,.75));
+}
+.hero-grid{
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.35) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.35) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 70%);
+}
+
+/* Floating */
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-slow { animation: float 10s ease-in-out infinite; }
+.animate-pulse-soft { animation: pulseSoft 5s ease-in-out infinite; }
+@keyframes float { 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(-14px)} }
+@keyframes pulseSoft { 0%,100%{ transform: scale(1); opacity:.6 } 50%{ transform: scale(1.05); opacity:.85 } }
+
+/* Reveal */
+.reveal{ opacity:0; transform: translateY(18px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); }
+.reveal.is-visible{ opacity:1; transform: translateY(0); }
+
+/* Buttons */
+.btn-primary{
+    background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 45%, #ffffff 100%);
+    color: #0b2a5b;
+    border: 1px solid rgba(255,255,255,.55);
+    transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+}
+.btn-primary:hover{
+    transform: translateY(-2px);
+    filter: brightness(1.02);
+    box-shadow: 0 18px 50px rgba(0,0,0,.35);
+}
+
+/* Tabs */
+.scan-tab{
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.15);
+    backdrop-filter: blur(10px);
+}
+.scan-tab:hover{ background: rgba(255,255,255,.12); }
+.scan-tab.is-active{
+    background: rgba(255,255,255,.18);
+    border-color: rgba(255,255,255,.28);
+    box-shadow: 0 18px 40px rgba(0,0,0,.22);
+}
+.scan-tab:focus{ outline: none; box-shadow: 0 0 0 4px rgba(224,242,254,.35); }
+
+/* Body map button */
+.body-btn{
+    display:flex; align-items:flex-start; gap:.75rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(15,23,42,.10);
+    background: #ffffff;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    box-shadow: 0 10px 22px rgba(2,6,23,.05);
+}
+.body-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(2,6,23,.08);
+    border-color: rgba(37,99,235,.25);
+}
+.body-btn.is-selected{
+    border-color: rgba(37,99,235,.45);
+    box-shadow: 0 18px 44px rgba(37,99,235,.12);
+}
+.body-btn .icon{
+    width:44px;height:44px;border-radius:14px;
+    background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+}
+.body-btn .label{ font-weight: 900; }
+
+/* Compare cards */
+.compare-card{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:1.5rem;
+    padding:1.75rem;
+    box-shadow: 0 12px 28px rgba(2,6,23,.06);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.compare-card:hover{ transform: translateY(-4px); box-shadow: 0 18px 40px rgba(2,6,23,.10); }
+
 /* Filters */
 .category-filter{
     border:1px solid #e2e8f0;
@@ -1004,12 +1110,10 @@ document.addEventListener('DOMContentLoaded', () => {
     padding:.55rem 1rem;
     border-radius:9999px;
     font-weight:800;
-    transition:all .2s ease;
+    transition: all .2s ease;
 }
 .category-filter:hover{ background:#f8fafc; border-color:#cbd5e1; }
-.category-filter.active{
-    background:#1d4ed8; border-color:#1d4ed8; color:#fff;
-}
+.category-filter.active{ background:#1d4ed8; border-color:#1d4ed8; color:#fff; }
 
 /* Service cards */
 .service-card{
@@ -1018,37 +1122,45 @@ document.addEventListener('DOMContentLoaded', () => {
     border-radius:1.5rem;
     padding:1.5rem;
     box-shadow:0 12px 28px rgba(2,6,23,.06);
-    transition:transform .2s ease, box-shadow .2s ease;
+    transition: transform .2s ease, box-shadow .2s ease;
 }
-.service-card:hover{
-    transform: translateY(-4px);
-    box-shadow:0 18px 40px rgba(2,6,23,.10);
+.service-card:hover{ transform: translateY(-4px); box-shadow:0 18px 40px rgba(2,6,23,.10); }
+
+/* Pills + badges */
+.pill{
+    display:inline-flex; align-items:center;
+    font-size: .95rem;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    padding:.5rem .75rem;
+    border-radius:.75rem;
+    color:#334155;
+    font-weight: 700;
+}
+.badge-insurance{
+    background:#ecfdf5;
+    border:1px solid #bbf7d0;
+    color:#15803d;
+    padding:.5rem .75rem;
+    border-radius:999px;
+    font-weight: 900;
+    font-size: .85rem;
 }
 
-/* Body map buttons */
-.body-btn{
-    display:flex;
-    align-items:flex-start;
-    gap:.75rem;
-    padding:1rem;
-    border-radius:1rem;
-    border:1px solid rgba(15,23,42,.10);
-    background: #ffffff;
-    transition:all .2s ease;
-    box-shadow:0 10px 22px rgba(2,6,23,.05);
+/* Info cards */
+.info-card{
+    background:#fff;
+    border:1px solid #f1f5f9;
+    border-radius:1.5rem;
+    padding:1.5rem;
+    box-shadow: 0 10px 24px rgba(2,6,23,.05);
 }
-.body-btn:hover{ transform: translateY(-2px); box-shadow:0 14px 30px rgba(2,6,23,.08); }
 
-.body-btn .icon{
-    width:44px;height:44px;border-radius:14px;
-    background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
-    display:flex;align-items:center;justify-content:center;
-    flex-shrink:0;
-}
-.body-btn .label{ font-weight:900; }
+/* Modal animation */
+.modal-pop{ animation: pop .18s ease-out; }
+@keyframes pop{ from{ transform: translateY(8px) scale(.98); opacity:.6 } to{ transform: translateY(0) scale(1); opacity:1 } }
 
-/* Reveal helpers (if layout doesn't already define) */
-.reveal{ opacity:0; transform:translateY(18px); transition:all .7s ease; }
-.is-visible{ opacity:1; transform:translateY(0); }
+/* Recommendations entry animation */
+.rec-panel{ animation: pop .18s ease-out; }
 </style>
 @endpush
